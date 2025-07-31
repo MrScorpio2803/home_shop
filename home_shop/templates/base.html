@@ -1,0 +1,113 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/bootstrap/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/my_css.css' %}">
+
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'favicon/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon/favicon-16x16.png' %}">
+    <link rel="manifest" href="{% static 'favicon/site.webmanifest' %}">
+    {% block extra_css %}
+    {% endblock %}
+    <title>{% block title %}{% endblock %}</title>
+</head>
+
+
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
+            <div class="container">
+                <a class="navbar-brand" href="{% url 'main:index' %}">Home</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item dropdown ">
+                            <a class="nav-link dropdown-toggle text-white" href="#" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                Информация
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item  text-white" href="{% url 'main:about_payment' %}">Доставка и оплата</a></li>
+                                <li><a class="dropdown-item  text-white" href="{% url 'main:about_contact' %}">Контактная информация</a></li>
+                                <li><a class="dropdown-item  text-white" href="{% url 'main:about_us' %}">Про нас</a></li>
+                            </ul>
+                        </li>
+                        {% if not user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link  text-white" href="users/login.html">Войти</a>
+                        </li>
+                        {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link  text-white" href="carts/cart.html">Корзина</a>
+                        </li>
+                        <li class="nav-item dropdown ">
+                            <a class="nav-link dropdown-toggle text-white" href="#" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                Мой профиль
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item  text-white" href="users/profile.html">Личный кабинет</a>
+                                </li>
+                                <li><a class="dropdown-item  text-white" href="#">Админ панель</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item  text-white" href="#">Выйти</a></li>
+                            </ul>
+                        </li>
+                        {% endif %}
+                    </ul>
+                    <div class="d-flex align-items-center">
+                        <div class="dropdown me-3">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="catalogDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img src="{% static 'icons/grid-fill.svg' %}" width="16" height="16" alt="Каталог">
+                                <span class="ms-1">Каталог</span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end bg-dark" aria-labelledby="catalogDropdown">
+                                <li><a class="dropdown-item text-white" href="{% url 'catalog:index' %}">Все товары</a></li>
+                                <li><a class="dropdown-item text-white" href="">Кухня</a></li>
+                                <li><a class="dropdown-item text-white" href="">Спальня</a></li>
+                                <li><a class="dropdown-item text-white" href="">Гостинная</a></li>
+                                <li><a class="dropdown-item text-white" href="">Офис</a></li>
+                                <li><a class="dropdown-item text-white" href="">Фурнитура</a></li>
+                                <li><a class="dropdown-item text-white" href="">Декор</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <form class="d-flex" role="search">
+                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-success text-white" type="submit">Поиск</button>
+                    </form>
+                </div>
+            </div>
+        </nav>
+    </header>
+        <!-- Контент -->
+    {% block body %}
+    {% endblock %}
+
+    <footer class="py-4 bg-dark">
+        <div class="container">
+            <p class="m-0 text-center text-white">Copyright &copy; Home 2025</p>
+        </div>
+    </footer>
+    <script src="{% static 'js/jquery/jquery-3.7.0.min.js' %}"></script>
+    <script src="{% static 'js/jquery-events.js' %}"></script>
+    <script src="{% static 'js/jquery-ajax.js' %}"></script>
+    <script src="{% static 'js/bootstrap/bootstrap.bundle.min.js' %}"></script>
+    {% block extra_js %}
+    {% endblock %}
+</body>
+
+</html>

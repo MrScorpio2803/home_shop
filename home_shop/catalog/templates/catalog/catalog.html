@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Каталог
+{% endblock %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <div class="d-flex justify-content-end my-4">
+            <button class="btn btn-dark" type="button" data-bs-toggle="offcanvas" data-bs-target="#filterPanel" aria-controls="filterPanel">
+                Фильтры
+            </button>
+        </div>
+
+        <div class="offcanvas offcanvas-end bg-white bg-opacity-75" tabindex="-1" id="filterPanel" aria-labelledby="filterPanelLabel">
+            <div class="offcanvas-header">
+                <h5 id="filterPanelLabel">Фильтры</h5>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Закрыть"></button>
+            </div>
+            <div class="offcanvas-body">
+                <form method="get">
+                    <div class="mb-3">
+                        <label for="searchQuery" class="form-label">Поиск</label>
+                        <input type="text" id="searchQuery" name="q" class="form-control" value="{{ request.GET.q }}">
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="onSale" name="on_sale" value="on" {% if request.GET.on_sale %}checked{% endif %}>
+                        <label class="form-check-label" for="onSale">Только по акции</label>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Категория</label>
+                        {% for cat in categories %}
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="category" id="cat{{ forloop.counter }}" value="{{ cat }}" {% if request.GET.category == cat %}checked{% endif %}>
+                                <label class="form-check-label" for="cat{{ forloop.counter }}">{{ cat }}</label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Сортировать</label>
+                        <select class="form-select" name="order_by">
+                            <option value="default" {% if request.GET.order_by == "default" %}selected{% endif %}>По умолчанию</option>
+                            <option value="price" {% if request.GET.order_by == "price" %} selected{% endif %}>Цена: по возрастанию</option>
+                            <option value="-price" {% if request.GET.order_by == "-price" %}selected{% endif %}>Цена: по убыванию</option>
+                        </select>
+                    </div>
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary">Применить</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        {% for card in cards %}
+        <div class="col-lg-4 col-md-6 p-4">
+            <div class="card border-primary rounded custom-shadow">
+                <img src="{% static card.image_link %} " class="card-img-top" alt="{{ card.image_alt }}">
+                <div class="card-body">
+                    <a href="#">
+                        <p class="card-title">{{ card.title }}</p>
+                    </a>
+                    <p class="card-text text-truncate">{{ card.description }}</p>
+                    <p class="product_category">{{ card.category }}</p>
+                    <div class="d-flex justify-content-between">
+                        {% if card.sale and card.sale > 0 %}
+                        <p><s>{{ card.price }}</s>$</p>
+                        <p><strong>{{ card.total_price }}$</strong></p>
+                        <span class="badge bg-warning text-dark">Скидка {{ card.sale }}%</span>
+                        <a href="#" class="btn add-to-cart">
+                            <img class="mx-1" src="{% static 'icons/cart-plus.svg' %}" alt="Catalog Icon"
+                                width="32" height="32">
+                        </a>
+                        {% else %}
+                        <p><strong>{{ card.total_price }}$</strong></p>
+                        <a href="#" class="btn add-to-cart">
+                            <img class="mx-1" src="{% static 'icons/cart-plus.svg' %}" alt="Catalog Icon"
+                                width="32" height="32">
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <nav aria-label="Page navigation example">
+        <ul class="pagination justify-content-center my-4">
+            <div class="custom-shadow d-flex">
+                <li class="page-item disabled">
+                  <a class="page-link">Previous</a>
+                </li>
+                <li class="page-item"><a class="page-link" href="#">1</a></li>
+                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                <li class="page-item">
+                  <a class="page-link" href="#">Next</a>
+                </li>
+            </div>
+        </ul>
+    </nav>
+</div>
+
+{% endblock %}

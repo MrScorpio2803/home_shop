@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Главная
+{% endblock %}
+
+{% block body %}
+<div class="container my-5 bg-white bg-opacity-75 p-4 rounded shadow-sm">
+  <h1 class="mb-4 text-center">Добро пожаловать в Магазин мебели HOME</h1>
+  <!-- Блок промо-карточек вместо баннера -->
+  <div class="row mb-5">
+    <div class="col-md-4 mb-3">
+      <div class="card h-100 text-center p-3">
+        <img src="{% static 'main/images/sales.jpg' %}" class="img-fluid w-100 mb-3" style="max-height: 70px"  alt="Скидки">
+        <h5 class="card-title">Сезонные скидки</h5>
+        <p class="card-text">До 30% на популярные коллекции.</p>
+        <a href="#" class="btn btn-outline-primary btn-sm">Узнать подробнее</a>
+      </div>
+    </div>
+    <div class="col-md-4 mb-3">
+      <div class="card h-100 text-center p-3">
+        <img src="{% static 'main/images/news.jpg' %}" class="img-fluid w-100 mb-3" style="max-height: 70px" alt="Новинки">
+        <h5 class="card-title">Новые поступления</h5>
+        <p class="card-text">Свежие модели для вашего дома.</p>
+        <a href="#" class="btn btn-outline-primary btn-sm">Перейти</a>
+      </div>
+    </div>
+    <div class="col-md-4 mb-3">
+      <div class="card h-100 text-center p-3">
+        <img src="{% static 'main/images/best_sellers.jpg' %}" class="img-fluid w-100 h-67px mb-3" style="max-height: 70px" alt="Хиты продаж">
+        <h5 class="card-title">Хиты продаж</h5>
+        <p class="card-text">Товары, которые выбирают чаще всего.</p>
+        <a href="#" class="btn btn-outline-primary btn-sm">Смотреть</a>
+      </div>
+    </div>
+  </div>
+  <!-- Раздел новых поступлений -->
+  <h2 class="mb-3">Новые поступления</h2>
+  <div class="row">
+    {% for product in new_products %}
+    <div class="col-md-3 mb-4">
+      <div class="card h-100">
+        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+        <div class="card-body">
+          <h5 class="card-title">{{ product.name }}</h5>
+          <p class="card-text">{{ product.price }} ₽</p>
+          <a href="#" class="btn btn-outline-primary btn-sm">Подробнее</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <!-- Раздел категорий -->
+  <h2 class="mt-5 mb-3">Популярные категории</h2>
+  <div class="d-flex justify-content-around mb-5">
+    {% for category in categories %}
+    <div class="text-center">
+      <a href="#">
+        <img src="{{ category.image.url }}" class="rounded-circle mb-2" width="100" height="100" alt="{{ category.name }}">
+        <p>{{ category.name }}</p>
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+  <!-- Отзывы клиентов -->
+  <h2 class="mt-5 mb-3">Отзывы клиентов</h2>
+  <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner">
+      {% for review in reviews %}
+      <div class="carousel-item {% if forloop.first %}active{% endif %}">
+        <div class="card p-4">
+          <p class="mb-2">“{{ review.text }}”</p>
+          <h6 class="text-end">— {{ review.author }}</h6>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
+      <span class="carousel-control-prev-icon"></span>
+    </button>
+    <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next">
+      <span class="carousel-control-next-icon"></span>
+    </button>
+  </div>
+</div>
+{% endblock %}

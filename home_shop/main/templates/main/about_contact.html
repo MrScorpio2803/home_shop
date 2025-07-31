@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block title %}Контактная информация{% endblock %}
+
+{% block extracss %}{% endblock %}
+
+{% block cart_button %}
+{% endblock %}
+
+{% block body %}
+<div class="container my-5 bg-white bg-opacity-75 p-4 rounded shadow-sm">
+  <h1 class="mb-4">Контактная информация</h1>
+  <p>Готовы помочь вам выбрать идеальную мебель — свяжитесь с нами!</p>
+  <ul class="list-unstyled mb-4">
+    <li><strong>Адрес офиса:</strong> ул. Примерная, 10, г. Москва, Россия</li>
+    <li><strong>Телефон:</strong><a href="tel:+74951234567"> +7 (495) 123-45-67</a></li>
+    <li><strong>Email:</strong> <a href="mailto:info@homepythonhub.ru">info@homepythonhub.ru</a></li>
+    <li><strong>Режим работы:</strong> Пн–Пт 9:00–18:00, Сб 10:00–16:00, Вс — выходной</li>
+  </ul>
+  <h2 class="mt-4">Форма обратной связи</h2>
+  <form method="post" action="" class="mt-3">
+    {% csrf_token %}
+    <div class="row">
+      <div class="col-md-6 mb-3">
+        <label for="id_name" class="form-label">Ваше имя</label>
+        <input type="text" name="name" id="id_name" class="form-control" placeholder="Иван Иванов" required>
+      </div>
+      <div class="col-md-6 mb-3">
+        <label for="id_email" class="form-label">Email</label>
+        <input type="email" name="email" id="id_email" class="form-control" placeholder="example@mail.ru" required>
+      </div>
+    </div>
+    <div class="mb-3">
+      <label for="id_subject" class="form-label">Тема</label>
+      <input type="text" name="subject" id="id_subject" class="form-control" placeholder="Ваш вопрос" required>
+    </div>
+    <div class="mb-3">
+      <label for="id_message" class="form-label">Сообщение</label>
+      <textarea name="message" id="id_message" rows="6" class="form-control" placeholder="Опишите ваш запрос" required></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Отправить сообщение</button>
+  </form>
+</div>
+{% endblock %}
+{% block extrajs %}
+{% endblock %}
