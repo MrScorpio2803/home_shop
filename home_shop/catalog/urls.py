@@ -1,6 +1,7 @@
 from django.urls import path, include
 from .views import IndexView
-
+from django.conf import settings
+from django.conf.urls.static import static
 
 app_name = 'catalog'
 
@@ -11,3 +12,5 @@ urlpatterns = [
     # path('payment/', AboutPayment.as_view(), name='about_payment'),
     # path('refund/', AboutRefund.as_view(), name='about_refund'),
 ]
+
+

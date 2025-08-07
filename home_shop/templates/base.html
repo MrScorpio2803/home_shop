@@ -76,12 +76,9 @@
                             </button>
                             <ul class="dropdown-menu dropdown-menu-end bg-dark" aria-labelledby="catalogDropdown">
                                 <li><a class="dropdown-item text-white" href="{% url 'catalog:index' %}">Все товары</a></li>
-                                <li><a class="dropdown-item text-white" href="">Кухня</a></li>
-                                <li><a class="dropdown-item text-white" href="">Спальня</a></li>
-                                <li><a class="dropdown-item text-white" href="">Гостинная</a></li>
-                                <li><a class="dropdown-item text-white" href="">Офис</a></li>
-                                <li><a class="dropdown-item text-white" href="">Фурнитура</a></li>
-                                <li><a class="dropdown-item text-white" href="">Декор</a></li>
+                                {% for cat in all_categories %}
+                                <li><a class="dropdown-item text-white" href="{% url 'catalog:index' %}?category={{ cat.key }}">{{ cat.name }}</a></li>
+                                {% endfor %}
                             </ul>
                         </div>
                     </div>

@@ -5,6 +5,13 @@
 Каталог
 {% endblock %}
 
+
+
+{% block extra_css %}
+    {% if all_models|length == 0 %}
+    <link rel="stylesheet" href="{% static 'css/my_footer_css.css' %}">
+    {% endif %}
+{% endblock %}
 {% block body %}
 <div class="container">
     <div class="row">
@@ -29,21 +36,23 @@
                         <input class="form-check-input" type="checkbox" id="onSale" name="on_sale" value="on" {% if request.GET.on_sale %}checked{% endif %}>
                         <label class="form-check-label" for="onSale">Только по акции</label>
                     </div>
-                    <div class="mb-3">
-                        <label class="form-label">Категория</label>
-                        {% for cat in categories %}
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="category" id="cat{{ forloop.counter }}" value="{{ cat }}" {% if request.GET.category == cat %}checked{% endif %}>
-                                <label class="form-check-label" for="cat{{ forloop.counter }}">{{ cat }}</label>
-                            </div>
-                        {% endfor %}
-                    </div>
+<!--                    <div class="mb-3">-->
+<!--                        <label class="form-label">Категория</label>-->
+<!--                        {% for cat in all_categories %}-->
+<!--                            <div class="form-check">-->
+<!--                                <input class="form-check-input" type="radio" name="category" id="{{ cat.key }}" value="{{ cat.key }}" {% if request.GET.category == cat.key %}checked{% endif %}>-->
+<!--                                <label class="form-check-label" for="{{ cat.key }}">{{ cat.name }}</label>-->
+<!--                            </div>-->
+<!--                        {% endfor %}-->
+<!--                    </div>-->
                     <div class="mb-3">
                         <label class="form-label">Сортировать</label>
                         <select class="form-select" name="order_by">
                             <option value="default" {% if request.GET.order_by == "default" %}selected{% endif %}>По умолчанию</option>
                             <option value="price" {% if request.GET.order_by == "price" %} selected{% endif %}>Цена: по возрастанию</option>
                             <option value="-price" {% if request.GET.order_by == "-price" %}selected{% endif %}>Цена: по убыванию</option>
+                            <option value="alphabet" {% if request.GET.order_by == "alphabet" %}selected{% endif %}>Название: от А до Я</option>
+                            <option value="-alphabet" {% if request.GET.order_by == "-alphabet" %}selected{% endif %}>Название: от Я до А</option>
                         </select>
                     </div>
                     <div class="d-grid">
@@ -52,38 +61,47 @@
                 </form>
             </div>
         </div>
-
+        {% if cards %}
         {% for card in cards %}
-        <div class="col-lg-4 col-md-6 p-4">
-            <div class="card border-primary rounded custom-shadow">
-                <img src="{% static card.image_link %} " class="card-img-top" alt="{{ card.image_alt }}">
-                <div class="card-body">
-                    <a href="#">
-                        <p class="card-title">{{ card.title }}</p>
-                    </a>
-                    <p class="card-text text-truncate">{{ card.description }}</p>
-                    <p class="product_category">{{ card.category }}</p>
-                    <div class="d-flex justify-content-between">
-                        {% if card.sale and card.sale > 0 %}
-                        <p><s>{{ card.price }}</s>$</p>
-                        <p><strong>{{ card.total_price }}$</strong></p>
-                        <span class="badge bg-warning text-dark">Скидка {{ card.sale }}%</span>
-                        <a href="#" class="btn add-to-cart">
-                            <img class="mx-1" src="{% static 'icons/cart-plus.svg' %}" alt="Catalog Icon"
-                                width="32" height="32">
+            <div class="col-lg-4 col-md-6 p-4">
+                <div class="card border-primary rounded custom-shadow">
+
+                    <img src="{{ card.image.url }}" class="card-img-top" alt="{{ card.name }}">
+                    <div class="card-body">
+                        <a href="#">
+                            <p class="card-title">{{ card.name }}</p>
                         </a>
-                        {% else %}
-                        <p><strong>{{ card.total_price }}$</strong></p>
-                        <a href="#" class="btn add-to-cart">
-                            <img class="mx-1" src="{% static 'icons/cart-plus.svg' %}" alt="Catalog Icon"
-                                width="32" height="32">
-                        </a>
-                        {% endif %}
+                        <p class="card-text text-truncate">{{ card.description }}</p>
+                        <p class="product_category">{{ card.category.name }}</p>
+                        <div class="d-flex justify-content-between">
+                            {% if card.discount and card.discount > 0 %}
+                            <p><s>{{ card.price }}</s>$</p>
+                            <p><strong>{{ card.total_price }}$</strong></p>
+                            <span class="badge bg-warning text-dark">Скидка {{ card.discount }}%</span>
+                            <a href="#" class="btn add-to-cart">
+                                <img class="mx-1" src="{% static 'icons/cart-plus.svg' %}" alt="Catalog Icon"
+                                    width="32" height="32">
+                            </a>
+                            {% else %}
+                            <p><strong>{{ card.total_price }}$</strong></p>
+                            <a href="#" class="btn add-to-cart">
+                                <img class="mx-1" src="{% static 'icons/cart-plus.svg' %}" alt="Catalog Icon"
+                                    width="32" height="32">
+                            </a>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        {% endfor %}
+            {% endfor %}
+        {% else %}
+            <div class="col-12 p-5 text-center">
+                <div class="alert alert-secondary" role="alert">
+                    Здесь пока пусто
+                </div>
+            </div>
+        {% endif %}
+
     </div>
     <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center my-4">

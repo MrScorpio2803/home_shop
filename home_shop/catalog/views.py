@@ -1,63 +1,48 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views import View
+
+from django.db.models import F, ExpressionWrapper, FloatField
+from django.db.models import Q
+
+from .models import Category, Product
+
 
 class IndexView(View):
 
     def get(self, req):
-        cards = [
-            {
-                "image_link": "images/goods/kitchen_table.jpg",
-                "image_alt": "Набор кухонных ножей",
-                "title": "Профессиональный набор ножей",
-                "description": "Изящный 6‑предметный набор из нержавеющей стали для кухни.",
-                "category": "kitchen",
-                "sale": 15,
-                "price": 120.00,
-                "total_price": 102.00,  # 120 - 15% = 102
-            },
-            {
-                "image_link": "images/goods/sofa.jpg",
-                "image_alt": "Удобный диван",
-                "title": "Угловой диван «Лаконик»",
-                "description": "Просторный уголок с обивкой из микрофибры, цвет — серый.",
-                "category": "livingroom",
-                "sale": 0,
-                "price": 850.00,
-                "total_price": 850.00,  # без скидки
-            },
-            {
-                "image_link": "images/goods/double_bed.jpg",
-                "image_alt": "Двуспальная кровать",
-                "title": "Кровать «Комфорт»",
-                "description": "Двуспальная кровать из массива сосны, размеры 160×200 см.",
-                "category": "bedroom",
-                "sale": 10,
-                "price": 450.00,
-                "total_price": 405.00,  # 450 - 10% = 405
-            },
-            {
-                "image_link": "images/goods/flower.jpg",
-                "image_alt": "Набор махровых полотенец",
-                "title": "Полотенца «Премиум» (3 шт.)",
-                "description": "Мягкие махровые полотенца, 70×140 см, белый цвет.",
-                "category": "bathroom",
-                "sale": 5,
-                "price": 35.00,
-                "total_price": 33.25,  # 35 - 5% = 33.25
-            },
-            {
-                "image_link": "images/goods/strange_table.jpg",
-                "image_alt": "Офисный стол",
-                "title": "Письменный стол «Минимал»",
-                "description": "Лаконичный стол под работу и учебу, ламинированная поверхность.",
-                "category": "office",
-                "sale": 20,
-                "price": 200.00,
-                "total_price": 160.00,  # 200 - 20% = 160
-            },
-        ]
+        key = req.GET.get('category')
+        on_sale = req.GET.get('on_sale', '')
+        order_by = req.GET.get('order_by', 'default')
+        filters = Q()
+
+        if key:
+            category = get_object_or_404(Category, key=key)
+            filters &= Q(category=category)
+        if on_sale == 'on':
+            filters &= Q(discount__gt=0)
+        products = Product.objects.annotate(
+            total_price=ExpressionWrapper(F('price') * (1 - F('discount') / 100.0),
+                                          output_field=FloatField()
+                                          )
+        ).filter(filters)
+
+        if order_by == 'default':
+            products = products.order_by('pk')
+        elif order_by == 'price':
+            products = products.order_by('total_price')
+        elif order_by == '-price':
+            products = products.order_by('-total_price')
+        elif order_by == 'alphabet':
+            products = products.order_by('name')
+        elif order_by == '-alphabet':
+            products = products.order_by('-name')
+        for product in products:
+            product.total_price = int(product.total_price) if int(
+                product.total_price) == product.total_price else round(product.total_price, 2)
+            product.discount = int(product.discount) if int(product.discount) == product.discount else round(
+                product.discount, 2)
         context = {
-            'cards': cards
+            'cards': products
         }
         return render(req, 'catalog/catalog.html', context=context)
 # Create your views here.
