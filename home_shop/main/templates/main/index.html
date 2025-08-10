@@ -5,6 +5,11 @@
 Главная
 {% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'main/css/categories.css' %}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+{% endblock %}
+
 {% block body %}
 <div class="container my-5 bg-white bg-opacity-75 p-4 rounded shadow-sm">
   <h1 class="mb-4 text-center">Добро пожаловать в Магазин мебели HOME</h1>
@@ -15,7 +20,7 @@
         <img src="{% static 'main/images/sales.jpg' %}" class="img-fluid w-100 mb-3" style="max-height: 70px"  alt="Скидки">
         <h5 class="card-title">Сезонные скидки</h5>
         <p class="card-text">До 30% на популярные коллекции.</p>
-        <a href="#" class="btn btn-outline-primary btn-sm">Узнать подробнее</a>
+        <a href="{% url 'catalog:index' %}?on_sale=on" class="btn btn-outline-primary btn-sm">Узнать подробнее</a>
       </div>
     </div>
     <div class="col-md-4 mb-3">
@@ -23,7 +28,7 @@
         <img src="{% static 'main/images/news.jpg' %}" class="img-fluid w-100 mb-3" style="max-height: 70px" alt="Новинки">
         <h5 class="card-title">Новые поступления</h5>
         <p class="card-text">Свежие модели для вашего дома.</p>
-        <a href="#" class="btn btn-outline-primary btn-sm">Перейти</a>
+        <a href="#news" class="btn btn-outline-primary btn-sm">Перейти</a>
       </div>
     </div>
     <div class="col-md-4 mb-3">
@@ -31,12 +36,12 @@
         <img src="{% static 'main/images/best_sellers.jpg' %}" class="img-fluid w-100 h-67px mb-3" style="max-height: 70px" alt="Хиты продаж">
         <h5 class="card-title">Хиты продаж</h5>
         <p class="card-text">Товары, которые выбирают чаще всего.</p>
-        <a href="#" class="btn btn-outline-primary btn-sm">Смотреть</a>
+        <a href="{% url 'catalog:index' %}?bestsellers='on'" class="btn btn-outline-primary btn-sm">Смотреть</a>
       </div>
     </div>
   </div>
   <!-- Раздел новых поступлений -->
-  <h2 class="mb-3">Новые поступления</h2>
+  <h2 class="mb-3" id="news">Новые поступления</h2>
   <div class="row">
     {% for product in new_products %}
     <div class="col-md-3 mb-4">
@@ -44,8 +49,8 @@
         <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
         <div class="card-body">
           <h5 class="card-title">{{ product.name }}</h5>
-          <p class="card-text">{{ product.price }} ₽</p>
-          <a href="#" class="btn btn-outline-primary btn-sm">Подробнее</a>
+          <p class="card-text">{{ product.total_price }} ₽</p>
+          <a href="{% url 'catalog:product' product.slug %}" class="btn btn-outline-primary btn-sm">Подробнее</a>
         </div>
       </div>
     </div>
@@ -53,13 +58,28 @@
   </div>
   <!-- Раздел категорий -->
   <h2 class="mt-5 mb-3">Популярные категории</h2>
-  <div class="d-flex justify-content-around mb-5">
+  <div class="row">
     {% for category in categories %}
-    <div class="text-center">
-      <a href="#">
-        <img src="{{ category.image.url }}" class="rounded-circle mb-2" width="100" height="100" alt="{{ category.name }}">
-        <p>{{ category.name }}</p>
-      </a>
+    <div class="col-md-3 col-sm-6 mb-4">
+      <div class="card h-100 text-center border-0 shadow-sm category-card">
+        <div class="card-body d-flex flex-column align-items-center justify-content-center">
+          {% if category.name|lower == "кухня" %}
+              <i class="bi bi-basket3"></i>  <!-- корзина для кухни -->
+            {% elif category.name|lower == "гостиная" %}
+              <i class="bi bi-house-door"></i> <!-- дом, как гостиная -->
+            {% elif category.name|lower == "спальня" %}
+              <i class="bi bi-cloud-moon"></i> <!-- облако с луной -->
+            {% elif category.name|lower == "офис" %}
+              <i class="bi bi-pc-display"></i> <!-- монитор -->
+            {% elif category.name|lower == "ванная" %}
+              <i class="bi bi-water"></i> <!-- капля воды -->
+            {% else %}
+              <i class="bi bi-box"></i> <!-- коробка -->
+          {% endif %}
+          <h5 class="card-title">{{ category.name }}</h5>
+          <a href="{% url 'catalog:catergory_products' category.key %}" class="btn btn-outline-primary btn-sm mt-3">Перейти</a>
+        </div>
+      </div>
     </div>
     {% endfor %}
   </div>
@@ -71,7 +91,7 @@
       <div class="carousel-item {% if forloop.first %}active{% endif %}">
         <div class="card p-4">
           <p class="mb-2">“{{ review.text }}”</p>
-          <h6 class="text-end">— {{ review.author }}</h6>
+          <h6 class="text-end">— {{ review.author.first_name }}</h6>
         </div>
       </div>
       {% endfor %}

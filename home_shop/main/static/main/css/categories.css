@@ -1,0 +1,15 @@
+.category-card {
+  background: linear-gradient(135deg, #f8f9fa, #ffffff);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border-radius: 12px;
+}
+
+.category-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+}
+
+.category-icon {
+  font-size: 2.5rem;
+  color: #0d6efd;
+}

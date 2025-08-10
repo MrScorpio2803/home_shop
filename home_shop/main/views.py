@@ -1,28 +1,35 @@
 from django.views import View
 from django.shortcuts import render
+from django.db.models import F, ExpressionWrapper, FloatField
 
+from catalog.models import Product, Category
+from .models import Review
 
 class IndexView(View):
     def get(self, req):
+        new_products = Product.objects.annotate(
+            total_price=ExpressionWrapper(F('price') * (1 - F('discount') / 100.0),
+                                          output_field=FloatField()
+                                          )
+        ).order_by('-created_at')[:4]
+        categories = Category.objects.all()[:3]
+        for product in new_products:
+            product.total_price = int(product.total_price) if int(
+                product.total_price) == product.total_price else round(product.total_price, 2)
 
-        new_products = [
-            {'id': 1, 'name': 'Диван Лорд', 'price': 35000, 'image': {'url': '/static/images/sofa_lord.jpg'}},
-            {'id': 2, 'name': 'Стол Паркет', 'price': 15000, 'image': {'url': '/static/images/table_parket.jpg'}},
-            {'id': 3, 'name': 'Кресло Уют', 'price': 12000, 'image': {'url': '/static/images/chair_cozy.jpg'}},
-            {'id': 4, 'name': 'Шкаф Классика', 'price': 27000, 'image': {'url': '/static/images/wardrobe_classic.jpg'}},
-        ]
+        reviews = Review.objects.all()
 
-        categories = [
-            {'slug': 'sofas', 'name': 'Диваны', 'image': {'url': '/static/images/cat_sofas.jpg'}},
-            {'slug': 'tables', 'name': 'Столы', 'image': {'url': '/static/images/cat_tables.jpg'}},
-            {'slug': 'chairs', 'name': 'Кресла', 'image': {'url': '/static/images/cat_chairs.jpg'}},
-        ]
+        # categories = [
+        #     {'slug': 'sofas', 'name': 'Диваны', 'image': {'url': '/static/images/cat_sofas.jpg'}},
+        #     {'slug': 'tables', 'name': 'Столы', 'image': {'url': '/static/images/cat_tables.jpg'}},
+        #     {'slug': 'chairs', 'name': 'Кресла', 'image': {'url': '/static/images/cat_chairs.jpg'}},
+        # ]
 
-        reviews = [
-            {'author': 'Анна', 'text': 'Отличный сервис и качественная мебель! Рекомендую.'},
-            {'author': 'Иван', 'text': 'Заказал диван, доставили вовремя и без повреждений.'},
-            {'author': 'Мария', 'text': 'Большой выбор и приятные цены.'},
-        ]
+        # reviews = [
+        #     {'author': 'Анна', 'text': 'Отличный сервис и качественная мебель! Рекомендую.'},
+        #     {'author': 'Иван', 'text': 'Заказал диван, доставили вовремя и без повреждений.'},
+        #     {'author': 'Мария', 'text': 'Большой выбор и приятные цены.'},
+        # ]
 
         context = {
             'new_products': new_products,

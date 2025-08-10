@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-Каталог
+{% if not cat %} Каталог {% else %} {{ cat }} {% endif %}
 {% endblock %}
 
 
@@ -68,7 +68,7 @@
 
                     <img src="{{ card.image.url }}" class="card-img-top" alt="{{ card.name }}">
                     <div class="card-body">
-                        <a href="#">
+                        <a href="{% url 'catalog:product' card.slug %}">
                             <p class="card-title">{{ card.name }}</p>
                         </a>
                         <p class="card-text">{{ card.description|truncatechars:50 }}</p>
@@ -103,14 +103,18 @@
         {% endif %}
 
     </div>
+    {% if not cat_name %}
+        {% url 'catalog:index' as page_url %}
+    {% else %}
+        {% url 'catalog:catergory_products' cat_name as page_url %}
+    {% endif %}
     <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center my-4">
             <div class="custom-shadow d-flex">
                 <li class="page-item {% if not cards.has_previous %}disabled {% endif %}">
                   <a
                           class="page-link"
-                          href="{% if cards.has_previous %}
-                          {% url 'catalog:index' %}?page={{ cards.previous_page_number }}
+                          href="{% if cards.has_previous %} {{ page_url }}?page={{ cards.previous_page_number }}
                           {% else %} #
                           {% endif %}">Предыдущая</a>
                 </li>
@@ -118,7 +122,7 @@
                 {% for page in cards.paginator.page_range %}
                     {% if page >= cards.number|add:-2 and page <= cards.number|add:2 %}
                         <li class="page-item {% if page == cards.number %} active {% endif %}">
-                            <a class="page-link" href="{% url 'catalog:index'%}?page={{ page }}">{{ page }}</a>
+                            <a class="page-link" href="{{ page_url }}?page={{ page }}">{{ page }}</a>
                         </li>
                     {% endif %}
                 {% endfor %}
@@ -127,8 +131,7 @@
 
                 <li class="page-item {% if not cards.has_next %} disabled {% endif %}">
                   <a class="page-link"
-                          href="{% if cards.has_next %}
-                          {% url 'catalog:index' %}?page={{ cards.next_page_number }}
+                          href="{% if cards.has_next %} {{ page_url }}?page={{ cards.next_page_number }}
                           {% else %} #
                           {% endif %}">Следующая</a>
                 </li>
