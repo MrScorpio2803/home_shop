@@ -77,13 +77,13 @@
                             <ul class="dropdown-menu dropdown-menu-end bg-dark" aria-labelledby="catalogDropdown">
                                 <li><a class="dropdown-item text-white" href="{% url 'catalog:index' %}">Все товары</a></li>
                                 {% for cat in all_categories %}
-                                <li><a class="dropdown-item text-white" href="{% url 'catalog:index' %}?category={{ cat.key }}">{{ cat.name }}</a></li>
+                                <li><a class="dropdown-item text-white" href="{% url 'catalog:catergory_products' cat.key %}">{{ cat.name }}</a></li>
                                 {% endfor %}
                             </ul>
                         </div>
                     </div>
-                    <form class="d-flex" role="search">
-                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                    <form class="d-flex" role="search" action="{% url 'catalog:search' %}" method="get">
+                        <input class="form-control me-2" type="search" name="q" placeholder="Search" aria-label="Search">
                         <button class="btn btn-outline-success text-white" type="submit">Поиск</button>
                     </form>
                 </div>
