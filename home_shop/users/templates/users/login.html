@@ -20,19 +20,34 @@
 
                         <form action="{% url 'users:login' %}" method="post">
                             {% csrf_token %}
-                            {{ form }}
-<!--                            <div class="mb-3">-->
-<!--                                <label for="username" class="form-label">Имя пользователя</label>-->
-<!--                                <input type="text" class="form-control" id="username" placeholder="Введите ваше имя пользователя" required>-->
-<!--                            </div>-->
-<!--                            <div class="mb-3">-->
-<!--                                <label for="password" class="form-label">Пароль</label>-->
-<!--                                <input type="password" class="form-control" id="password" placeholder="Введите ваш пароль" required>-->
-<!--                            </div>-->
+                            {% if request.GET.next %}
+                                <input type="hidden" name="next" value="{{ request.GET.next }}">
+                            {% endif %}
+                            <div class="mb-3">
+                                <label for="id_username" class="form-label">Имя пользователя</label>
+                                <input type="text" class="form-control" name="username" id="id_username" value="{% if form.username.value %}{{ form.username.value }}
+                                {% endif %}"
+                                       placeholder="Введите ваше имя пользователя" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="id_password" class="form-label">Пароль</label>
+                                <input type="password" class="form-control" name="password"
+                                       id="id_password" placeholder="Введите ваш пароль" required>
+                            </div>
+                            {% if form.non_field_errors %}
+                                <div class="d-flex align-items-center border rounded p-2 mb-3" style="border-color: #ccc; background-color: #fafafa;">
+                                    <span class="me-2 text-warning" style="font-size: 1.2rem;">⚠️</span>
+                                    <div style="color: #444; font-weight: 500; font-size: 0.95rem; line-height: 1.4;">
+                                        {% for error in form.non_field_errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            {% endif %}
                             <button type="submit" class="btn btn-dark btn-block">Войти</button>
                         </form>
                         <div class="mt-3">
-                            <a href="#">Забыли пароль?</a> | <a href="registration.html">Создать аккаунт</a>
+                            <a href="#">Забыли пароль?</a> | <a href="{% url 'users:register' %}">Создать аккаунт</a>
                         </div>
                         <hr>
                         <div class="text-center">
@@ -56,4 +71,42 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const passwordInput = document.querySelector('input[type="password"]');
+    if (!passwordInput) return;
+
+    const inputGroup = document.createElement('div');
+    inputGroup.className = 'input-group mb-3';
+
+    const passwordClone = passwordInput.cloneNode(true);
+
+    const toggleBtnWrapper = document.createElement('span');
+    toggleBtnWrapper.className = 'input-group-text';
+    toggleBtnWrapper.style.cursor = 'pointer';
+
+    // Создаем иконку с закрытым глазом (по умолчанию)
+    const eyeIcon = document.createElement('i');
+    eyeIcon.className = 'bi bi-eye-slash'; // перечёркнутый глаз
+
+    toggleBtnWrapper.appendChild(eyeIcon);
+
+    toggleBtnWrapper.addEventListener('click', function() {
+        if (passwordClone.type === 'password') {
+            passwordClone.type = 'text';
+            eyeIcon.className = 'bi bi-eye';  // открытый глаз
+        } else {
+            passwordClone.type = 'password';
+            eyeIcon.className = 'bi bi-eye-slash';  // перечёркнутый глаз
+        }
+    });
+
+    passwordInput.parentNode.replaceChild(inputGroup, passwordInput);
+    inputGroup.appendChild(passwordClone);
+    inputGroup.appendChild(toggleBtnWrapper);
+});
+</script>
 {% endblock %}

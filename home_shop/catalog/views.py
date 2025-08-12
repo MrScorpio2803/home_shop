@@ -82,11 +82,3 @@ class ProductDetailsView(View):
         }
 
         return render(req, 'catalog/product.html', context=context)
-
-
-
-
-class NewProductsView(View):
-    def get(self, req):
-        ...
-

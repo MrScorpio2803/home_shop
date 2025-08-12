@@ -1,7 +1,7 @@
 {% load static %}
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="ru">
 
 <head>
     <meta charset="UTF-8">
@@ -9,6 +9,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css/bootstrap/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/my_css.css' %}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
 
     <link rel="apple-touch-icon" sizes="180x180" href="{% static 'favicon/apple-touch-icon.png' %}">
     <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon/favicon-32x32.png' %}">
@@ -45,25 +47,26 @@
                         </li>
                         {% if not user.is_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link  text-white" href="users/login.html">Войти</a>
+                            <a class="nav-link  text-white" href="{% url 'users:login' %}">Войти</a>
                         </li>
                         {% else %}
                         <li class="nav-item">
                             <a class="nav-link  text-white" href="carts/cart.html">Корзина</a>
                         </li>
                         <li class="nav-item dropdown ">
-                            <a class="nav-link dropdown-toggle text-white" href="#" role="button"
+                            <a class="nav-link dropdown-toggle text-white" role="button"
                                 data-bs-toggle="dropdown" aria-expanded="false">
                                 Мой профиль
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item  text-white" href="users/profile.html">Личный кабинет</a>
-                                </li>
-                                <li><a class="dropdown-item  text-white" href="#">Админ панель</a></li>
+                                <li><a class="dropdown-item text-white" role="button" href="{% url 'users:profile' %}">Личный кабинет</a></li>
+                                {% if user.is_staff or user.is_admin %}
+                                    <li><a class="dropdown-item  text-white" href="{% url 'admin:index' %}">Админ панель</a></li>
+                                {% endif %}
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
-                                <li><a class="dropdown-item  text-white" href="#">Выйти</a></li>
+                                <li><a class="dropdown-item  text-white" href="{% url 'users:logout' %}">Выйти</a></li>
                             </ul>
                         </li>
                         {% endif %}
@@ -90,7 +93,8 @@
             </div>
         </nav>
     </header>
-        <!-- Контент -->
+
+<!--    {% include 'includes/notifications.html' %}-->
     {% block body %}
     {% endblock %}
 
