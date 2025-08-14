@@ -5,6 +5,7 @@ from users.forms import UserLoginForm, UserRegisterForm, UserEditForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.urls import reverse_lazy
 
 
 class LoginView(View):
@@ -48,33 +49,33 @@ class RegisterView(View):
         return render(req, 'users/registration.html', context={'form': form})
 
 
-# class ProfileView(LoginRequiredMixin, View):
-#     def get(self, req):
-#         form = UserEditForm(instance=req.user)
-#         context = {'form': form}
-#         return render(req, 'users/profile.html', context=context)
-#
-#     def post(self, req):
-#         form = UserEditForm(data=req.POST, instance=req.user, files=req.FILES)
-#         if form.is_valid():
-#             form.save()
-#             return redirect('users:profile')
-#         return render(req, 'users/profile.html', context={'form': form})
-@login_required
-def profile_view(req):
-    if req.method == 'POST':
+class ProfileView(LoginRequiredMixin, View):
+    login_url = reverse_lazy('users:login')
+
+    def get(self, req):
+        form = UserEditForm(instance=req.user)
+        context = {'form': form}
+        return render(req, 'users/profile.html', context=context)
+
+    def post(self, req):
         form = UserEditForm(data=req.POST, instance=req.user, files=req.FILES)
         if form.is_valid():
             form.save()
             return redirect('users:profile')
         return render(req, 'users/profile.html', context={'form': form})
-    else:
-        form = UserEditForm(instance=req.user)
-        context = {'form': form}
-        return render(req, 'users/profile.html', context=context)
 
 
-@login_required
-def logout_view(req):
-    logout(req)
-    return redirect('main:index')
+class LogoutView(LoginRequiredMixin, View):
+    login_url = reverse_lazy('users:login')
+
+    def get(self, req):
+        return self.post(req)
+
+    def post(self, req):
+        logout(req)
+        return redirect('main:index')
+
+
+class CartView(View):
+    def get(self, req):
+        return render(req, 'cart/cart.html')

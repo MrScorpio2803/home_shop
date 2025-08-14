@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'main',
     'catalog',
     'users',
+    'cart',
 ]
 
 MIDDLEWARE = [
@@ -135,4 +136,4 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'users.User'
-LOGIN_URL = reverse_lazy('users:login')
+LOGIN_URL = '/user/login'

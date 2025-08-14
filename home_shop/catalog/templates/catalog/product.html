@@ -6,7 +6,9 @@
 {% endblock %}
 
 {% block extra_css %}
+    {% if product.discount == 0 %}
     <link rel="stylesheet" href="{% static 'css/my_footer_css.css' %}">
+    {% endif %}
 {% endblock %}
 
 {% block body %}
