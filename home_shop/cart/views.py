@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.views import View
 
 from .models import Cart
@@ -24,5 +24,7 @@ class CartChangeView(View):
     ...
 
 
-class CartRemoveView(View):
-    ...
+def cart_remove(req, cart_id):
+    cart = get_object_or_404(Cart, id=cart_id)
+    cart.delete()
+    return redirect(req.META['HTTP_REFERER'])
