@@ -13,7 +13,7 @@ class CartQuerySet(models.QuerySet):
 
     def get_total_quantity(self):
         if self:
-            return sum(cart.quantity() for cart in self)
+            return sum(cart.quantity for cart in self)
         return 0
 
 

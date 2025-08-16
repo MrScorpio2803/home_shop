@@ -5,7 +5,7 @@ from users.forms import UserLoginForm, UserRegisterForm, UserEditForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 
 
 class LoginView(View):
@@ -23,8 +23,11 @@ class LoginView(View):
             user = authenticate(username=username, password=password)
             if user:
                 login(req, user)
-                if req.POST.get('next', None):
+
+                page = req.POST.get('next', None)
+                if page and page != reverse('users:login'):
                     return redirect(req.POST.get('next'))
+
                 return redirect('main:index')
             else:
                 form.add_error(None, 'Неверное имя пользователя или пароль')
