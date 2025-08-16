@@ -50,9 +50,11 @@
                             <a class="nav-link  text-white" href="{% url 'users:login' %}">Войти</a>
                         </li>
                         {% else %}
+                        {% if request.resolver_match.namespace != "catalog" %}
                         <li class="nav-item">
-                            <a class="nav-link  text-white" href="{% url 'users:cart' %}">Корзина</a>
+                            <a class="nav-link text-white" href="{% url 'users:cart' %}">Корзина</a>
                         </li>
+                        {% endif %}
                         <li class="nav-item dropdown ">
                             <a class="nav-link dropdown-toggle text-white" role="button"
                                 data-bs-toggle="dropdown" aria-expanded="false">
@@ -84,6 +86,7 @@
                                 {% endfor %}
                             </ul>
                         </div>
+
                     </div>
                     <form class="d-flex" role="search" action="{% url 'catalog:search' %}" method="get">
                         <input class="form-control me-2" type="search" name="q" placeholder="Search" aria-label="Search">
@@ -95,8 +98,29 @@
     </header>
 
 <!--    {% include 'includes/notifications.html' %}-->
-    {% block body %}
-    {% endblock %}
+    <main>
+        <section>
+            {% comment %}
+            <div class="container">
+                <div class="row mt-1 z-3">
+                    {% block cart_modal %}{% endblock %}
+                </div>
+            </div>
+            {% block body %}
+            {% endblock %}
+            {% endcomment %}
+            <div class="container">
+                <div class="row mt-3">
+                    <div class="col-auto">
+                      {% block cart_modal %}{% endblock %}
+                    </div>
+                    <div class="col">
+                      {% block body %}{% endblock %}
+                    </div>
+              </div>
+            </div>
+        </section>
+    </main>
 
     <footer class="py-4 bg-dark">
         <div class="container">
@@ -104,7 +128,6 @@
         </div>
     </footer>
     <script src="{% static 'js/jquery/jquery-3.7.0.min.js' %}"></script>
-    <script src="{% static 'js/jquery-events.js' %}"></script>
     <script src="{% static 'js/jquery-ajax.js' %}"></script>
     <script src="{% static 'js/bootstrap/bootstrap.bundle.min.js' %}"></script>
     {% block extra_js %}

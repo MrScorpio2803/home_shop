@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load cart_tags %}
+
 
 {% block title %}
 Корзина
@@ -9,12 +11,29 @@
     <link rel="stylesheet" href="{% static 'css/my_footer_css.css' %}">
 {% endblock %}
 
+
+
 {% block body %}
-    <div class="d-flex justify-content-center align-items-start min-vh-100 py-5">
-        <div class="bg-white bg-opacity-75 p-5 rounded-4 shadow-lg border border-light col-12 col-lg-11 col-xl-10 px-3" style="max-width: 1100px; width: 100%;">
-            <div class="row justify-content-center">
-                {% include './includes/cart_main_part.html' %}
+{% user_carts request as carts %}
+<div class="container">
+    <div class="row mt-1">
+        <div class="col-lg-10">
+            <div class="row">
+                <div class="container mt-5">
+                    <div class="row justify-content-center">
+                        <div class=" bg-white p-4 mb-4 mx-2 rounded custom-shadow">
+                            <h3 class="text-center mb-4">Корзина</h3>
+                            <div class="container" id="cart-items-container">
+                                {% include 'cart/includes/cart_main_part.html' %}
+                            </div>
+                            <a class="btn btn-dark" href="../orders/create_order.html">
+                                Оформить заказ
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+</div>
 {% endblock %}

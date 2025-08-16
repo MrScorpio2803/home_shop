@@ -12,6 +12,11 @@
     <link rel="stylesheet" href="{% static 'css/my_footer_css.css' %}">
     {% endif %}
 {% endblock %}
+
+{% block cart_modal %}
+{% include 'includes/card_button.html' %}
+{% endblock %}
+
 {% block body %}
 <div class="container">
     <div class="row">
@@ -78,13 +83,15 @@
                             <p><s>{{ card.price }}</s>$</p>
                             <p><strong>{{ card.total_price }}$</strong></p>
                             <span class="badge bg-warning text-dark">Скидка {{ card.discount }}%</span>
-                            <a href="{% url 'cart:cart_add' card.slug %}" class="btn add-to-cart">
+                            <a href="{% url 'cart:cart_add' %}" class="btn add-to-cart" data-product-id="{{ card.id }}">
+                                {% csrf_token %}
                                 <img class="mx-1" src="{% static 'icons/cart-plus.svg' %}" alt="Catalog Icon"
                                     width="32" height="32">
                             </a>
                             {% else %}
                             <p><strong>{{ card.total_price }}$</strong></p>
-                            <a href="{% url 'cart:cart_add' card.slug %}" class="btn add-to-cart">
+                            <a href="{% url 'cart:cart_add'  %}" class="btn add-to-cart" data-product-id="{{ card.id }}">
+                                {% csrf_token %}
                                 <img class="mx-1" src="{% static 'icons/cart-plus.svg' %}" alt="Catalog Icon"
                                     width="32" height="32">
                             </a>

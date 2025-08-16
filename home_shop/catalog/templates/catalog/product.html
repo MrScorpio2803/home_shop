@@ -5,6 +5,10 @@
 {{ product.name }}
 {% endblock %}
 
+{% block cart_modal %}
+{% include 'includes/card_button.html' %}
+{% endblock %}
+
 {% block extra_css %}
     {% if product.discount == 0 %}
     <link rel="stylesheet" href="{% static 'css/my_footer_css.css' %}">
@@ -62,7 +66,7 @@
             <h5 class="card-title">{{ product.name }}</h5>
             <p class="card-text">{{ product.description }}</p>
             <a href="{% url 'catalog:index' %}" class="btn btn-info text-white">Вернуться к каталогу</a>
-            <a href="{% url 'cart:cart_add' product.slug %}" class="btn btn-dark add-to-cart">Добавить в корзину</a>
+            <a href="{% url 'cart:cart_add' %}" class="btn btn-dark add-to-cart" data-product-id="{{ product.id }}">{% csrf_token %} Добавить в корзину</a>
         </div>
     </div>
 </div>
