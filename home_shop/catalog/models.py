@@ -24,6 +24,9 @@ class Product(models.Model):
             return round(self.price * (1 - self.discount / 100), 2)
         return self.price
 
+    def __str__(self):
+        return f'Товар: {self.name}'
+
 
 class Category(models.Model):
     class Meta:
@@ -34,4 +37,7 @@ class Category(models.Model):
     key = models.CharField(max_length=100, verbose_name='Название категории')
     name = models.CharField(max_length=100, verbose_name='Название для отображения')
     slug = models.SlugField()
+
+    def __str__(self):
+        return f'Категория: {self.name}'
 # Create your models here.

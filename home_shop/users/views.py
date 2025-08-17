@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views import View
 
+from cart.models import Cart
 from users.forms import UserLoginForm, UserRegisterForm, UserEditForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -21,8 +22,14 @@ class LoginView(View):
             username = req.POST['username']
             password = req.POST['password']
             user = authenticate(username=username, password=password)
+
+            session_key = req.session.session_key
+
             if user:
                 login(req, user)
+
+                if session_key:
+                    Cart.objects.filter(session_key=session_key).update(user=user)
 
                 page = req.POST.get('next', None)
                 if page and page != reverse('users:login'):
@@ -45,8 +52,13 @@ class RegisterView(View):
         form = UserRegisterForm(data=req.POST)
         if form.is_valid():
             form.save()
+
+            session_key = req.session.session_key
             user = form.instance
+
             login(req, user)
+            if session_key:
+                Cart.objects.filter(session_key=session_key).update(user=user)
             return redirect('main:index')
 
         return render(req, 'users/registration.html', context={'form': form})

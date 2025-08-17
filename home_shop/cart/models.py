@@ -33,4 +33,7 @@ class Cart(models.Model):
 
     def get_sum(self):
         return round(self.product.get_total_price() * self.quantity, 2)
+
+    def __str__(self):
+        return f'Корзина пользователя {self.user.username} | Товар: {self.product.name} | Количество: {self.quantity}'
 # Create your models here.

@@ -22,6 +22,15 @@ class CartAddView(View):
                     cart.save()
             else:
                 Cart.objects.create(user=req.user, product=product, quantity=1)
+        else:
+            carts = Cart.objects.filter(session_key=req.session.session_key, product=product)
+            if carts.exists():
+                cart = carts.first()
+                if cart:
+                    cart.quantity += 1
+                    cart.save()
+            else:
+                Cart.objects.create(session_key=req.session.session_key, product=product, quantity=1)
         users_cart = get_user_carts(req)
         cart_items_html = render_to_string(
             'cart/includes/cart_main_part.html', {'carts': users_cart}, request=req
