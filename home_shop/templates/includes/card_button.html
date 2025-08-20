@@ -26,7 +26,7 @@
                     {% include 'cart/includes/cart_main_part.html' %}
                     <!-- Закончилась разметка корзины -->
                 </div>
-                <a class="btn btn-dark" href="orders/create_order.html">
+                <a class="btn btn-dark" href="{% url 'orders:create_order' %}">
                     Оформить заказ
                 </a>
             </div>

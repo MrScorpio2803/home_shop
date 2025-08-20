@@ -21,9 +21,14 @@
         <div class="row">
 
             <div class="col-md-4">
+                {% if product.image %}
                 <img src="{{ product.image.url }}"
                     class="img-thumbnail" data-bs-toggle="modal" data-bs-target="#product_imageModal_{{ product.pk }}" alt="{{ product.name }}">
-            </div>
+                {% else %}
+                <img src="{% static 'images/no-image.png' %}"
+                    class="img-thumbnail" data-bs-toggle="modal" data-bs-target="#product_imageModal_{{ product.pk }}" alt="Нет изображения">
+                {% endif %}
+                </div>
             <div class="col-md-4 ">
                 <p class="product_id mt-3">id товара: {{ product.id }}</p>
             </div>
@@ -38,8 +43,13 @@
                                 aria-label="Закрыть"></button>
                         </div>
                         <div class="modal-body">
+                            {% if product.image %}
                             <img src="{{ product.image.url }}"
                                 class="img-fluid" alt="{{ product.name }}">
+                            {% else %}
+                            <img src="{% static 'images/no-image.png' %}"
+                                class="img-fluid" alt="Нет изображения">
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -47,6 +57,8 @@
         </div>
         <!-- Описание товара -->
         <div class="card-body">
+            <h5 class="card-title">{{ product.name }}</h5>
+            <p class="card-text">{{ product.description }}</p>
             {% if product.discount > 0 %}
                 <p class="card-text d-flex align-items-center">
                   <span class="me-2">Цена:</span>
@@ -63,8 +75,8 @@
                   <strong>{{ product.total_price }}$</strong>
                 </p>
             {% endif %}
-            <h5 class="card-title">{{ product.name }}</h5>
-            <p class="card-text">{{ product.description }}</p>
+            <p class="card-text d-flex align-items-center">Остаток на складе: {{ product.quantity }}</p>
+            
             <a href="{% url 'catalog:index' %}" class="btn btn-info text-white">Вернуться к каталогу</a>
             <a href="{% url 'cart:cart_add' %}" class="btn btn-dark add-to-cart" data-product-id="{{ product.id }}">{% csrf_token %} Добавить в корзину</a>
         </div>

@@ -46,11 +46,20 @@
     {% for product in new_products %}
     <div class="col-md-3 mb-4">
       <div class="card h-100">
-        <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+        {% if product.image %}
+          <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+        {% else %}
+          <img src="{% static 'images/no-image.png' %}" class="card-img-top" alt="Нет изображения">
+        {% endif %}
         <div class="card-body">
           <h5 class="card-title">{{ product.name }}</h5>
           <p class="card-text">{{ product.total_price }} ₽</p>
           <a href="{% url 'catalog:product' product.slug %}" class="btn btn-outline-primary btn-sm">Подробнее</a>
+          <a href="{% url 'cart:cart_add'  %}" class="btn add-to-cart" data-product-id="{{ card.id }}">
+            {% csrf_token %}
+            <img class="mx-1" src="{% static 'icons/cart-plus.svg' %}" alt="Catalog Icon"
+                width="32" height="32">
+          </a>
         </div>
       </div>
     </div>

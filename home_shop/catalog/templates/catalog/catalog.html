@@ -71,13 +71,18 @@
             <div class="col-lg-4 col-md-6 p-4">
                 <div class="card border-primary rounded custom-shadow">
 
-                    <img src="{{ card.image.url }}" class="card-img-top" alt="{{ card.name }}">
+                    {% if card.image %}
+                        <img src="{{ card.image.url }}" class="card-img-top" alt="{{ card.name }}">
+                    {% else %}
+                        <img src="{% static 'images/no-image.png' %}" class="card-img-top" alt="Нет изображения">
+                    {% endif %}
                     <div class="card-body">
                         <a href="{% url 'catalog:product' card.slug %}">
                             <p class="card-title">{{ card.name }}</p>
                         </a>
                         <p class="card-text">{{ card.description|truncatechars:50 }}</p>
                         <p class="product_category">{{ card.category.name }}</p>
+                        <p>Остаток на складе: {{ card.quantity }}</p>
                         <div class="d-flex justify-content-between">
                             {% if card.discount and card.discount > 0 %}
                             <p><s>{{ card.price }}</s>$</p>

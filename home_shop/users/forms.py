@@ -35,10 +35,12 @@ class UserRegisterForm(UserCreationForm):
 class UserEditForm(UserChangeForm):
     class Meta:
         model = User
-        fields = ('image', 'first_name', 'last_name', 'username', 'email')
+        fields = ('image', 'first_name', 'last_name', 'username', 'email', 'phone')
 
     image = forms.ImageField(required=False)
     first_name = forms.CharField()
     last_name = forms.CharField()
     username = forms.CharField()
     email = forms.CharField()
+    phone = forms.CharField()
+

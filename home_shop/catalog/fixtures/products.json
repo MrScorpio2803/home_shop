@@ -1,0 +1,268 @@
+[
+    {
+      "model": "catalog.Category",
+      "pk": 1,
+      "fields": {
+        "key": "electronics",
+        "name": "Электроника",
+        "slug": "electronics"
+      }
+    },
+    {
+      "model": "catalog.Category",
+      "pk": 2,
+      "fields": {
+        "key": "books",
+        "name": "Книги",
+        "slug": "books"
+      }
+    },
+    {
+      "model": "catalog.Category",
+      "pk": 3,
+      "fields": {
+        "key": "clothes",
+        "name": "Одежда",
+        "slug": "clothes"
+      }
+    },
+    {
+      "model": "catalog.Category",
+      "pk": 4,
+      "fields": {
+        "key": "furniture",
+        "name": "Мебель",
+        "slug": "furniture"
+      }
+    },
+    {
+      "model": "catalog.Category",
+      "pk": 5,
+      "fields": {
+        "key": "toys",
+        "name": "Игрушки",
+        "slug": "toys"
+      }
+    },
+    {
+      "model": "catalog.Category",
+      "pk": 6,
+      "fields": {
+        "key": "food",
+        "name": "Продукты",
+        "slug": "food"
+      }
+    },
+  
+    {
+      "model": "catalog.Product",
+      "pk": 1,
+      "fields": {
+        "name": "Смартфон",
+        "description": "Современный смартфон с OLED-экраном.",
+        "image": "",
+        "price": 699.99,
+        "discount": 10,
+        "category": 1,
+        "slug": "smartfon",
+        "created_at": "2025-08-20T12:00:00Z"
+      }
+    },
+    {
+      "model": "catalog.Product",
+      "pk": 2,
+      "fields": {
+        "name": "Ноутбук",
+        "description": "Легкий и мощный ноутбук для работы и учебы.",
+        "image": "",
+        "price": 1199.99,
+        "discount": 15,
+        "category": 1,
+        "slug": "noutbuk",
+        "created_at": "2025-08-20T12:05:00Z"
+      }
+    },
+    {
+      "model": "catalog.Product",
+      "pk": 3,
+      "fields": {
+        "name": "Наушники",
+        "description": "Беспроводные наушники с шумоподавлением.",
+        "image": "",
+        "price": 199.99,
+        "discount": 5,
+        "category": 1,
+        "slug": "naushniki",
+        "created_at": "2025-08-20T12:10:00Z"
+      }
+    },
+    {
+      "model": "catalog.Product",
+      "pk": 4,
+      "fields": {
+        "name": "Книга Django",
+        "description": "Учебник по разработке на Django.",
+        "image": "",
+        "price": 39.99,
+        "discount": 0,
+        "category": 2,
+        "slug": "kniga-django",
+        "created_at": "2025-08-20T12:15:00Z"
+      }
+    },
+    {
+      "model": "catalog.Product",
+      "pk": 5,
+      "fields": {
+        "name": "Роман",
+        "description": "Художественный роман бестселлер.",
+        "image": "",
+        "price": 14.99,
+        "discount": 0,
+        "category": 2,
+        "slug": "roman",
+        "created_at": "2025-08-20T12:20:00Z"
+      }
+    },
+    {
+      "model": "catalog.Product",
+      "pk": 6,
+      "fields": {
+        "name": "Учебник по Python",
+        "description": "Практическое руководство по Python.",
+        "image": "",
+        "price": 29.99,
+        "discount": 10,
+        "category": 2,
+        "slug": "uchebnik-po-python",
+        "created_at": "2025-08-20T12:25:00Z"
+      }
+    },
+    {
+      "model": "catalog.Product",
+      "pk": 7,
+      "fields": {
+        "name": "Футболка",
+        "description": "Хлопковая футболка с принтом.",
+        "image": "",
+        "price": 19.99,
+        "discount": 20,
+        "category": 3,
+        "slug": "futbolka",
+        "created_at": "2025-08-20T12:30:00Z"
+      }
+    },
+    {
+      "model": "catalog.Product",
+      "pk": 8,
+      "fields": {
+        "name": "Джинсы",
+        "description": "Классические синие джинсы.",
+        "image": "",
+        "price": 49.99,
+        "discount": 10,
+        "category": 3,
+        "slug": "dzhinsy",
+        "created_at": "2025-08-20T12:35:00Z"
+      }
+    },
+    {
+      "model": "catalog.Product",
+      "pk": 9,
+      "fields": {
+        "name": "Куртка",
+        "description": "Утепленная зимняя куртка.",
+        "image": "",
+        "price": 129.99,
+        "discount": 15,
+        "category": 3,
+        "slug": "kurtka",
+        "created_at": "2025-08-20T12:40:00Z"
+      }
+    },
+    {
+      "model": "catalog.Product",
+      "pk": 10,
+      "fields": {
+        "name": "Стол",
+        "description": "Деревянный обеденный стол.",
+        "image": "",
+        "price": 299.99,
+        "discount": 10,
+        "category": 4,
+        "slug": "stol",
+        "created_at": "2025-08-20T12:45:00Z"
+      }
+    },
+    {
+      "model": "catalog.Product",
+      "pk": 11,
+      "fields": {
+        "name": "Стул",
+        "description": "Удобный офисный стул.",
+        "image": "",
+        "price": 89.99,
+        "discount": 5,
+        "category": 4,
+        "slug": "stul",
+        "created_at": "2025-08-20T12:50:00Z"
+      }
+    },
+    {
+      "model": "catalog.Product",
+      "pk": 12,
+      "fields": {
+        "name": "Шкаф",
+        "description": "Большой шкаф для одежды.",
+        "image": "",
+        "price": 499.99,
+        "discount": 20,
+        "category": 4,
+        "slug": "shkaf",
+        "created_at": "2025-08-20T12:55:00Z"
+      }
+    },
+    {
+      "model": "catalog.Product",
+      "pk": 13,
+      "fields": {
+        "name": "Конструктор Lego",
+        "description": "Набор конструктора Lego для детей.",
+        "image": "",
+        "price": 59.99,
+        "discount": 0,
+        "category": 5,
+        "slug": "konstruktor-lego",
+        "created_at": "2025-08-20T13:00:00Z"
+      }
+    },
+    {
+      "model": "catalog.Product",
+      "pk": 14,
+      "fields": {
+        "name": "Плюшевый мишка",
+        "description": "Мягкая игрушка мишка.",
+        "image": "",
+        "price": 24.99,
+        "discount": 5,
+        "category": 5,
+        "slug": "plyushevyj-mishka",
+        "created_at": "2025-08-20T13:05:00Z"
+      }
+    },
+    {
+      "model": "catalog.Product",
+      "pk": 15,
+      "fields": {
+        "name": "Пицца",
+        "description": "Пепперони с сыром и томатным соусом.",
+        "image": "",
+        "price": 12.99,
+        "discount": 0,
+        "category": 6,
+        "slug": "pizza",
+        "created_at": "2025-08-20T13:10:00Z"
+      }
+    }
+  ]
+  
