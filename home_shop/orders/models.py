@@ -30,7 +30,7 @@ class Order(models.Model):
     delivery_address = models.TextField(null=True, blank=True, verbose_name='Адрес доставки')
     is_payment_on_get = models.BooleanField(default=False, verbose_name='Оплата при получении')
     is_paid = models.BooleanField(default=False, verbose_name='Статус оплаты')
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='new', verbose_name='Статус заказа')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='В обработке', verbose_name='Статус заказа')
 
     class Meta:
         db_table = 'orders'

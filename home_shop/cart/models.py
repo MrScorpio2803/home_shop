@@ -8,7 +8,7 @@ from catalog.models import Product
 class CartQuerySet(models.QuerySet):
     def get_total_price(self):
         if self:
-            return sum(cart.get_sum() for cart in self)
+            return round(sum(cart.get_sum() for cart in self), 2)
         return 0
 
     def get_total_quantity(self):

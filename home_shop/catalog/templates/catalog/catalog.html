@@ -41,15 +41,6 @@
                         <input class="form-check-input" type="checkbox" id="onSale" name="on_sale" value="on" {% if request.GET.on_sale %}checked{% endif %}>
                         <label class="form-check-label" for="onSale">Только по акции</label>
                     </div>
-<!--                    <div class="mb-3">-->
-<!--                        <label class="form-label">Категория</label>-->
-<!--                        {% for cat in all_categories %}-->
-<!--                            <div class="form-check">-->
-<!--                                <input class="form-check-input" type="radio" name="category" id="{{ cat.key }}" value="{{ cat.key }}" {% if request.GET.category == cat.key %}checked{% endif %}>-->
-<!--                                <label class="form-check-label" for="{{ cat.key }}">{{ cat.name }}</label>-->
-<!--                            </div>-->
-<!--                        {% endfor %}-->
-<!--                    </div>-->
                     <div class="mb-3">
                         <label class="form-label">Сортировать</label>
                         <select class="form-select" name="order_by">
@@ -123,27 +114,27 @@
     <nav aria-label="Page navigation example">
         <ul class="pagination justify-content-center my-4">
             <div class="custom-shadow d-flex">
-                <li class="page-item {% if not cards.has_previous %}disabled {% endif %}">
+                <li class="page-item {% if not page_obj.has_previous %}disabled {% endif %}">
                   <a
                           class="page-link"
-                          href="{% if cards.has_previous %} {{ page_url }}?page={{ cards.previous_page_number }}
+                          href="{% if page_obj.has_previous %} {{ page_url }}?page={{ page_obj.previous_page_number }}&{{ querystring }}
                           {% else %} #
                           {% endif %}">Предыдущая</a>
                 </li>
 
-                {% for page in cards.paginator.page_range %}
-                    {% if page >= cards.number|add:-2 and page <= cards.number|add:2 %}
-                        <li class="page-item {% if page == cards.number %} active {% endif %}">
-                            <a class="page-link" href="{{ page_url }}?page={{ page }}">{{ page }}</a>
+                {% for page in page_obj.paginator.page_range %}
+                    {% if page >= page_obj.number|add:-2 and page <= page_obj.number|add:2 %}
+                        <li class="page-item {% if page == page_obj.number %} active {% endif %}">
+                            <a class="page-link" href="{{ page_url }}?page={{ page }}&{{ querystring }}">{{ page }}</a>
                         </li>
                     {% endif %}
                 {% endfor %}
 
 
 
-                <li class="page-item {% if not cards.has_next %} disabled {% endif %}">
+                <li class="page-item {% if not page_obj.has_next %} disabled {% endif %}">
                   <a class="page-link"
-                          href="{% if cards.has_next %} {{ page_url }}?page={{ cards.next_page_number }}
+                          href="{% if page_obj.has_next %} {{ page_url }}?page={{ page_obj.next_page_number }}&{{ querystring }}
                           {% else %} #
                           {% endif %}">Следующая</a>
                 </li>

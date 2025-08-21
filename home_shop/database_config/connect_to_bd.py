@@ -5,13 +5,15 @@ from django.core.exceptions import ImproperlyConfigured
 BASE_DIR = Path(__file__).resolve().parent.parent
 ENV_PATH = BASE_DIR / '.env'
 
+
 # Если хотите — автоматически подгрузить .env
 if ENV_PATH.exists():
     for line in ENV_PATH.read_text().splitlines():
         if not line or line.strip().startswith('#'):
             continue
-        k, v = line.split('=', 1)
+        k, v = [x.strip() for x in line.split("=", 1)]
         os.environ.setdefault(k, v)
+
 
 
 def get_env(var_name: str, default=None, required: bool = False):
@@ -35,4 +37,5 @@ def build_databases():
             'HOST': get_env('DB_HOST', ''),
             'PORT': get_env('DB_PORT', ''),
         }
+        
     }

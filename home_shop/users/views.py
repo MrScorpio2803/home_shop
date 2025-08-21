@@ -1,95 +1,86 @@
-from django.shortcuts import render, redirect
-from django.views import View
+from django.db.models.base import Model as Model
+from django.forms import BaseModelForm
+from django.http import HttpResponse
+from django.contrib.auth.views import LoginView
+from django.views.generic import CreateView, UpdateView, TemplateView
 
 from cart.models import Cart
 from users.forms import UserLoginForm, UserRegisterForm, UserEditForm
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse_lazy, reverse
+from django.urls import reverse_lazy
 
 
-class LoginView(View):
+class UserLoginView(LoginView):
 
-    def get(self, req):
-        form = UserLoginForm()
-        context = {'form': form}
-        return render(req, 'users/login.html', context=context)
+    template_name = 'users/login.html'
+    form_class = UserLoginForm
+    success_url = reverse_lazy('main:index')
 
-    def post(self, req):
-        form = UserLoginForm(data=req.POST)
-        if form.is_valid():
-            username = req.POST['username']
-            password = req.POST['password']
-            user = authenticate(username=username, password=password)
-
-            session_key = req.session.session_key
-
-            if user:
-                login(req, user)
-
-                if session_key:
-                    Cart.objects.filter(session_key=session_key).update(user=user)
-
-                page = req.POST.get('next', None)
-                if page and page != reverse('users:login'):
-                    return redirect(req.POST.get('next'))
-
-                return redirect('main:index')
-            else:
-                form.add_error(None, 'Неверное имя пользователя или пароль')
-
-        return render(req, 'users/login.html', context={'form': form})
-
-
-class RegisterView(View):
-    def get(self, req):
-        form = UserRegisterForm()
-        context = {'form': form}
-        return render(req, 'users/registration.html', context=context)
-
-    def post(self, req):
-        form = UserRegisterForm(data=req.POST)
-        if form.is_valid():
-            form.save()
-
-            session_key = req.session.session_key
-            user = form.instance
-
-            login(req, user)
+    def get_success_url(self) -> str:
+        page = self.request.POST.get('next', None)
+        if page and page != reverse_lazy('users:login'):
+            return page
+        return reverse_lazy('main:index')
+    
+    def form_valid(self, form):
+        session_key = self.request.session.session_key
+        user = form.get_user()
+        if user:
+            login(self.request, user)
+            old_carts = Cart.objects.filter(user=user)
+            if old_carts.exists():
+                for cart in old_carts:
+                    product = cart.product
+                    check_product = Cart.objects.filter(product=product, session_key=session_key).first()
+                    if check_product:
+                        check_product.quantity += cart.quantity
+                        check_product.save()
+                        cart.delete()
             if session_key:
                 Cart.objects.filter(session_key=session_key).update(user=user)
-            return redirect('main:index')
-
-        return render(req, 'users/registration.html', context={'form': form})
+            return super().form_valid(form)
 
 
-class ProfileView(LoginRequiredMixin, View):
-    login_url = reverse_lazy('users:login')
+class RegisterView(CreateView):
+    
+    template_name = 'users/registration.html'
+    form_class = UserRegisterForm
+    
+    def form_valid(self, form: BaseModelForm) -> HttpResponse:
+        
+        session_key = self.request.session.session_key
+        user = form.instance
 
-    def get(self, req):
-        form = UserEditForm(instance=req.user)
-        context = {'form': form}
-        return render(req, 'users/profile.html', context=context)
-
-    def post(self, req):
-        form = UserEditForm(data=req.POST, instance=req.user, files=req.FILES)
-        if form.is_valid():
+        if user:
             form.save()
-            return redirect('users:profile')
-        return render(req, 'users/profile.html', context={'form': form})
+            login(self.request, user)
+            if session_key:
+                Cart.objects.filter(session_key=session_key).update(user=user)
+        
+        return super().form_valid(form)
+
+    def get_success_url(self) -> str:
+        return reverse_lazy('main:index')
 
 
-class LogoutView(LoginRequiredMixin, View):
+
+class ProfileView(LoginRequiredMixin, UpdateView):
     login_url = reverse_lazy('users:login')
+    template_name = 'users/profile.html'
+    form_class = UserEditForm
+    success_url = reverse_lazy('users:profile')
 
-    def get(self, req):
-        return self.post(req)
-
-    def post(self, req):
-        logout(req)
-        return redirect('main:index')
+    def get_object(self, queryset = None) -> Model:
+        return self.request.user
+    
 
 
-class CartView(View):
-    def get(self, req):
-        return render(req, 'cart/cart.html')
+# class LogoutView(LoginRequiredMixin, LogoutView):
+#     login_url = reverse_lazy('users:login')
+#     def get_s
+
+
+class CartView(TemplateView):
+    template_name = 'cart/cart.html'
+

@@ -11,4 +11,4 @@ def get_user_carts(req):
 
 
 def get_user_orders(req):
-    return Order.objects.filter(user=req.user).prefetch_related('items')
+    return Order.objects.filter(user=req.user).prefetch_related('items').order_by('-id')
