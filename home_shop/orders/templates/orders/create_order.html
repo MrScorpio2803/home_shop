@@ -11,7 +11,7 @@
 {% user_carts request as carts %}
 <div class="container">
     <h3 class="text-center mb-4">Выбранные товары</h3>
-    <div class="container" id="cart-items-container">
+    <div class="container bg-white p-4 mb-4 mx-2 rounded custom-shadow" id="cart-items-container">
         <!-- Разметка корзины -->
         {% include 'cart/includes/cart_main_part.html' %}
         <!-- Закончилась разметка корзины -->
@@ -20,7 +20,7 @@
 <!-- Детали заказа -->
 <div class="container">
     <h3 class="text-center">Детали заказа</h3>
-    <div class="card mb-3">
+    <div class="card mb-3  bg-white p-4 mx-2 rounded custom-shadow">
         <div class="card-body">
             <form action="{% url 'orders:create_order' %}" method="post">
                 {% csrf_token %}
@@ -132,9 +132,42 @@
 {% endblock %}
 
 {% block extra_js %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.9/inputmask.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.9/dist/inputmask.min.js"></script>
 <script>
+document.addEventListener("DOMContentLoaded", function() {
     var phoneInput = document.getElementById("id_phone_number");
-    Inputmask("999-999-99-99", { removeMaskOnSubmit: true }).mask(phoneInput);
+    if (phoneInput) {
+        var im = new Inputmask("999-999-99-99", { removeMaskOnSubmit: true });
+        im.mask(phoneInput);
+    }
+});
 </script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const deliveryRadios = document.querySelectorAll('input[name="delivery"]');
+        const deliveryAddressField = document.getElementById("deliveryAddressField");
+        const deliveryAddressInput = document.getElementById("id_delivery_address");
+    
+        function toggleAddressField() {
+            const selected = document.querySelector('input[name="delivery"]:checked').value;
+            if (selected === "1") {
+                deliveryAddressField.style.display = "block";   // доставка — показываем
+                deliveryAddressInput.required = true;           // делаем обязательным
+            } else {
+                deliveryAddressField.style.display = "none";    // самовывоз — скрываем
+                deliveryAddressInput.value = "";                // очищаем поле
+                deliveryAddressInput.required = false;          // убираем обязательность
+            }
+        }
+    
+        // при загрузке сразу выставляем корректно
+        toggleAddressField();
+    
+        // при переключении радиокнопок
+        deliveryRadios.forEach(radio => {
+            radio.addEventListener("change", toggleAddressField);
+        });
+    });
+</script>
+    
 {% endblock %}

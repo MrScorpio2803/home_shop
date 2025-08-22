@@ -1,10 +1,12 @@
 from typing import Any
 
 from django.views.generic import TemplateView
-from django.db.models import F, ExpressionWrapper, FloatField
+from django.db.models import F, ExpressionWrapper, FloatField, Sum, Value
+from django.db.models.functions import Coalesce
 
 from catalog.models import Product, Category
-from .models import Review
+from reviews.models import OrderReview as Review
+
 
 
 class IndexView(TemplateView):
@@ -13,7 +15,9 @@ class IndexView(TemplateView):
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         context['reviews'] = Review.objects.all()
-        context['categories'] = Category.objects.all()[:3]
+        context['categories'] = Category.objects.annotate(
+                            total_sold=Coalesce(Sum(F('products__orderitem__quantity')), Value(0))
+                            ).order_by('-total_sold')[:3]
         
         new_products = Product.objects.annotate(
             total_price=ExpressionWrapper(F('price') * (1 - F('discount') / 100.0),

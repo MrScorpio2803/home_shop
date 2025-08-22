@@ -165,5 +165,22 @@
     </div>
 {% endblock %}
 
+{% block extra_js %}
+
+<script src="https://cdn.jsdelivr.net/npm/inputmask@5.0.9/dist/inputmask.min.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    var phoneInput = document.getElementById("id_phone");
+    if (phoneInput) {
+        var im = new Inputmask("+7 (999) 999-99-99", {
+            removeMaskOnSubmit: true
+        });
+        im.mask(phoneInput);
+    }
+});
+</script>
+{% endblock %}
+
 
 

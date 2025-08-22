@@ -23,126 +23,128 @@
 
 
 <body>
-    <header>
-        <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
-            <div class="container">
-                <a class="navbar-brand" href="{% url 'main:index' %}">Home</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                    aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item dropdown ">
-                            <a class="nav-link dropdown-toggle text-white" href="#" role="button"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                Информация
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item  text-white" href="{% url 'main:about_payment' %}">Доставка и оплата</a></li>
-                                <li><a class="dropdown-item  text-white" href="{% url 'main:about_contact' %}">Контактная информация</a></li>
-                                <li><a class="dropdown-item  text-white" href="{% url 'main:about_us' %}">Про нас</a></li>
-                            </ul>
-                        </li>
-                        {% if not user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link  text-white" href="{% url 'users:login' %}">Войти</a>
-                        </li>
-                        {% else %}
-                        {% if request.resolver_match.namespace != "catalog" %}
-                        <li class="nav-item">
-                            <a class="nav-link text-white" href="{% url 'users:cart' %}">Корзина</a>
-                        </li>
-                        {% endif %}
-                        <li class="nav-item dropdown ">
-                            <a class="nav-link dropdown-toggle text-white" role="button"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                Мой профиль
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item text-white" role="button" href="{% url 'users:profile' %}">Личный кабинет</a></li>
-                                {% if user.is_staff or user.is_admin %}
-                                    <li><a class="dropdown-item  text-white" href="{% url 'admin:index' %}">Админ панель</a></li>
-                                {% endif %}
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
-                                <li>
-                                    <form action="{% url 'users:logout' %}" method="post">
-                                        {% csrf_token %}
-                                        <button type="submit" class="dropdown-item text-white" style="background: none; border: none;">
-                                            Выйти
-                                        </button>
-                                    </form>
-                                </li>
-                            </ul>
-                        </li>
-                        {% endif %}
-                    </ul>
-                    <div class="d-flex align-items-center">
-                        <div class="dropdown me-3">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="catalogDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                <img src="{% static 'icons/grid-fill.svg' %}" width="16" height="16" alt="Каталог">
-                                <span class="ms-1">Каталог</span>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end bg-dark" aria-labelledby="catalogDropdown">
-                                <li><a class="dropdown-item text-white" href="{% url 'catalog:index' %}">Все товары</a></li>
-                                {% for cat in all_categories %}
-                                <li><a class="dropdown-item text-white" href="{% url 'catalog:catergory_products' cat.key %}">{{ cat.name }}</a></li>
-                                {% endfor %}
-                            </ul>
+    <div class="d-flex flex-column min-vh-100">
+        <header>
+            <nav class="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
+                <div class="container">
+                    <a class="navbar-brand" href="{% url 'main:index' %}">Home</a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item dropdown ">
+                                <a class="nav-link dropdown-toggle text-white" href="#" role="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    Информация
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item  text-white" href="{% url 'main:about_payment' %}">Доставка и оплата</a></li>
+                                    <li><a class="dropdown-item  text-white" href="{% url 'main:about_contact' %}">Контактная информация</a></li>
+                                    <li><a class="dropdown-item  text-white" href="{% url 'main:about_us' %}">Про нас</a></li>
+                                </ul>
+                            </li>
+                            {% if not user.is_authenticated %}
+                            <li class="nav-item">
+                                <a class="nav-link  text-white" href="{% url 'users:login' %}">Войти</a>
+                            </li>
+                            {% else %}
+                            {% if request.resolver_match.namespace != "catalog" %}
+                            <li class="nav-item">
+                                <a class="nav-link text-white" href="{% url 'users:cart' %}">Корзина</a>
+                            </li>
+                            {% endif %}
+                            <li class="nav-item dropdown ">
+                                <a class="nav-link dropdown-toggle text-white" role="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    Мой профиль
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item text-white" role="button" href="{% url 'users:profile' %}">Личный кабинет</a></li>
+                                    {% if user.is_staff or user.is_admin %}
+                                        <li><a class="dropdown-item  text-white" href="{% url 'admin:index' %}">Админ панель</a></li>
+                                    {% endif %}
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+                                    <li>
+                                        <form action="{% url 'users:logout' %}" method="post">
+                                            {% csrf_token %}
+                                            <button type="submit" class="dropdown-item text-white" style="background: none; border: none;">
+                                                Выйти
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </li>
+                            {% endif %}
+                        </ul>
+                        <div class="d-flex align-items-center">
+                            <div class="dropdown me-3">
+                                <button class="btn btn-secondary dropdown-toggle" type="button" id="catalogDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <img src="{% static 'icons/grid-fill.svg' %}" width="16" height="16" alt="Каталог">
+                                    <span class="ms-1">Каталог</span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end bg-dark" aria-labelledby="catalogDropdown">
+                                    <li><a class="dropdown-item text-white" href="{% url 'catalog:index' %}">Все товары</a></li>
+                                    {% for cat in all_categories %}
+                                    <li><a class="dropdown-item text-white" href="{% url 'catalog:catergory_products' cat.key %}">{{ cat.name }}</a></li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+
                         </div>
-
+                        <form class="d-flex" role="search" action="{% url 'catalog:search' %}" method="get">
+                            <input class="form-control me-2" type="search" name="q" placeholder="Search" aria-label="Search">
+                            <button class="btn btn-outline-success text-white" type="submit">Поиск</button>
+                        </form>
                     </div>
-                    <form class="d-flex" role="search" action="{% url 'catalog:search' %}" method="get">
-                        <input class="form-control me-2" type="search" name="q" placeholder="Search" aria-label="Search">
-                        <button class="btn btn-outline-success text-white" type="submit">Поиск</button>
-                    </form>
                 </div>
-            </div>
-        </nav>
-        {% if messages %}
-            <div class="container mt-3">
-                {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </nav>
+            {% if messages %}
+                <div class="container mt-3">
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
-            </div>
-        {% endif %}
-    </header>
+            {% endif %}
+        </header>
 
-    <main>
-        <section>
-            {% comment %}
+        <main class="flex-fill">
+            <section>
+                {% comment %}
+                <div class="container">
+                    <div class="row mt-1 z-3">
+                        {% block cart_modal %}{% endblock %}
+                    </div>
+                </div>
+                {% block body %}
+                {% endblock %}
+                {% endcomment %}
+                <div class="container">
+                    <div class="row mt-3">
+                        <div class="col-auto">
+                        {% block cart_modal %}{% endblock %}
+                        </div>
+                        <div class="col">
+                        {% block body %}{% endblock %}
+                        </div>
+                </div>
+                </div>
+            </section>
+        </main>
+
+        <footer class="py-4 bg-dark mt-auto">
             <div class="container">
-                <div class="row mt-1 z-3">
-                    {% block cart_modal %}{% endblock %}
-                </div>
+                <p class="m-0 text-center text-white">Copyright &copy; Home 2025</p>
             </div>
-            {% block body %}
-            {% endblock %}
-            {% endcomment %}
-            <div class="container">
-                <div class="row mt-3">
-                    <div class="col-auto">
-                      {% block cart_modal %}{% endblock %}
-                    </div>
-                    <div class="col">
-                      {% block body %}{% endblock %}
-                    </div>
-              </div>
-            </div>
-        </section>
-    </main>
-
-    <footer class="py-4 bg-dark">
-        <div class="container">
-            <p class="m-0 text-center text-white">Copyright &copy; Home 2025</p>
-        </div>
-    </footer>
+        </footer>
+    </div>
     <script src="{% static 'js/jquery/jquery-3.7.0.min.js' %}"></script>
     <script src="{% static 'js/jquery-ajax.js' %}"></script>
     <script src="{% static 'js/bootstrap/bootstrap.bundle.min.js' %}"></script>

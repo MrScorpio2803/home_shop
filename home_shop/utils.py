@@ -1,7 +1,6 @@
 from catalog.models import Product, Category
 from django.utils.text import slugify
 
-
 def add_to_model():
     goods = [
         {'image': 'deps/images/goods/set_of_tea_table_and_two_chairs.jpg',
@@ -73,7 +72,7 @@ def add_to_model():
     categories = {c.key: c for c in Category.objects.all()}
     for card in goods:
         image = card['image']
-        image = image[image.find('/') + 1:].replace(' ', '_')
+        image = image[image.find('/')+1:].replace(' ', '_')
         name = card['name']
         description = card['description']
         category = categories.get(card['category'])
@@ -81,6 +80,7 @@ def add_to_model():
         if not category:
             print(f'Пропущена вот эта категория. Проверьте на опечатки: {card['category']}')
             continue
-        slug = str(slugify(image[image.rfind('/') + 1:image.find('.')])).replace('_', '-')
+        slug = str(slugify(image[image.rfind('/')+1:image.find('.')])).replace('_', '-')
         card = Product(name=name, description=description, image=image, price=price, slug=slug, category=category)
         card.save()
+

@@ -8,6 +8,7 @@
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'main/css/categories.css' %}">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet"> -->
 {% endblock %}
 
 {% block cart_modal %}
@@ -29,23 +30,23 @@
     </div>
     <div class="col-md-4 mb-3">
       <div class="card h-100 text-center p-3">
-        <img src="{% static 'main/images/news.jpg' %}" class="img-fluid w-100 mb-3" style="max-height: 70px" alt="Новинки">
+        <img src="{% static 'main/images/news.jpg' %}" class="img-fluid w-100 mb-3" style="max-height: 61px" alt="Новинки">
         <h5 class="card-title">Новые поступления</h5>
         <p class="card-text">Свежие модели для вашего дома.</p>
-        <a href="#news" class="btn btn-outline-primary btn-sm">Перейти</a>
+        <a href="{% url 'catalog:index' %}?new=on" class="btn btn-outline-primary btn-sm">Все новинки</a>
       </div>
     </div>
     <div class="col-md-4 mb-3">
       <div class="card h-100 text-center p-3">
-        <img src="{% static 'main/images/best_sellers.jpg' %}" class="img-fluid w-100 h-67px mb-3" style="max-height: 70px" alt="Хиты продаж">
+        <img src="{% static 'main/images/best_sallers.jpg' %}" class="img-fluid w-100 h-67px mb-3" style="max-height: 61px" alt="Хиты продаж">
         <h5 class="card-title">Хиты продаж</h5>
         <p class="card-text">Товары, которые выбирают чаще всего.</p>
-        <a href="{% url 'catalog:index' %}?bestsellers='on'" class="btn btn-outline-primary btn-sm">Смотреть</a>
+        <a href="{% url 'catalog:index' %}?bestsellers=on" class="btn btn-outline-primary btn-sm">Смотреть</a>
       </div>
     </div>
   </div>
   <!-- Раздел новых поступлений -->
-  <h2 class="mb-3" id="news">Новые поступления</h2>
+  <h2 class="mb-3" id="news">Самые свежие поступления</h2>
   <div class="row">
     {% for product in new_products %}
     <div class="col-md-3 mb-4">
@@ -58,7 +59,7 @@
         <div class="card-body">
           <h5 class="card-title">{{ product.name }}</h5>
           <p class="card-text">{{ product.total_price }} ₽</p>
-          <p class="card-text">Остаток на складе: {{ card.quantity }}</p>
+          <p class="card-text">Остаток на складе: {{ product.quantity }}</p>
           <a href="{% url 'catalog:product' product.slug %}" class="btn btn-outline-primary btn-sm">Подробнее</a>
           <a href="{% url 'cart:cart_add'  %}" class="btn add-to-cart" data-product-id="{{ product.id }}">
             {% csrf_token %}
@@ -77,19 +78,7 @@
     <div class="col-md-3 col-sm-6 mb-4">
       <div class="card h-100 text-center border-0 shadow-sm category-card">
         <div class="card-body d-flex flex-column align-items-center justify-content-center">
-          {% if category.name|lower == "кухня" %}
-              <i class="bi bi-basket3"></i>  <!-- корзина для кухни -->
-            {% elif category.name|lower == "гостиная" %}
-              <i class="bi bi-house-door"></i> <!-- дом, как гостиная -->
-            {% elif category.name|lower == "спальня" %}
-              <i class="bi bi-cloud-moon"></i> <!-- облако с луной -->
-            {% elif category.name|lower == "офис" %}
-              <i class="bi bi-pc-display"></i> <!-- монитор -->
-            {% elif category.name|lower == "ванная" %}
-              <i class="bi bi-water"></i> <!-- капля воды -->
-            {% else %}
-              <i class="bi bi-box"></i> <!-- коробка -->
-          {% endif %}
+          <i class="bi {{ category.icon }}"></i>  <!-- корзина для кухни -->
           <h5 class="card-title">{{ category.name }}</h5>
           <a href="{% url 'catalog:catergory_products' category.key %}" class="btn btn-outline-primary btn-sm mt-3">Перейти</a>
         </div>

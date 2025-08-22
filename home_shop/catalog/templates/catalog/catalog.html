@@ -7,12 +7,6 @@
 
 
 
-{% block extra_css %}
-    {% if all_models|length == 0 %}
-    <link rel="stylesheet" href="{% static 'css/my_footer_css.css' %}">
-    {% endif %}
-{% endblock %}
-
 {% block cart_modal %}
 {% include 'includes/card_button.html' %}
 {% endblock %}
@@ -32,7 +26,7 @@
                 <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Закрыть"></button>
             </div>
             <div class="offcanvas-body">
-                <form method="get">
+                <form method="get" id="filterForm">
                     <div class="mb-3">
                         <label for="searchQuery" class="form-label">Поиск</label>
                         <input type="text" id="searchQuery" name="q" class="form-control" value="{{ request.GET.q }}">
@@ -55,6 +49,24 @@
                         <button type="submit" class="btn btn-primary">Применить</button>
                     </div>
                 </form>
+                <script>
+                    // Сохраняем параметры при загрузке формы фильтров
+                    document.getElementById('filterForm').addEventListener('submit', function(e) {
+                        const urlParams = new URLSearchParams(window.location.search);
+                        const formData = new FormData(this);
+                        
+                        // Добавляем все существующие параметры, которых нет в форме
+                        for (const [key, value] of urlParams) {
+                            if (!formData.has(key)) {
+                                const hiddenInput = document.createElement('input');
+                                hiddenInput.type = 'hidden';
+                                hiddenInput.name = key;
+                                hiddenInput.value = value;
+                                this.appendChild(hiddenInput);
+                            }
+                        }
+                    });
+                </script>
             </div>
         </div>
         {% if cards %}
@@ -76,8 +88,8 @@
                         <p>Остаток на складе: {{ card.quantity }}</p>
                         <div class="d-flex justify-content-between">
                             {% if card.discount and card.discount > 0 %}
-                            <p><s>{{ card.price }}</s>$</p>
-                            <p><strong>{{ card.total_price }}$</strong></p>
+                            <p><s>{{ card.price }}</s>₽</p>
+                            <p><strong>{{ card.total_price }}₽</strong></p>
                             <span class="badge bg-warning text-dark">Скидка {{ card.discount }}%</span>
                             <a href="{% url 'cart:cart_add' %}" class="btn add-to-cart" data-product-id="{{ card.id }}">
                                 {% csrf_token %}
@@ -85,7 +97,7 @@
                                     width="32" height="32">
                             </a>
                             {% else %}
-                            <p><strong>{{ card.total_price }}$</strong></p>
+                            <p><strong>{{ card.total_price }}₽</strong></p>
                             <a href="{% url 'cart:cart_add'  %}" class="btn add-to-cart" data-product-id="{{ card.id }}">
                                 {% csrf_token %}
                                 <img class="mx-1" src="{% static 'icons/cart-plus.svg' %}" alt="Catalog Icon"
