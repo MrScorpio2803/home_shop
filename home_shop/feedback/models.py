@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 
+
 class FeedbackMessage(models.Model):
     TOPIC_CHOICES = [
         ('order', 'Вопрос по заказу'),
@@ -14,6 +15,7 @@ class FeedbackMessage(models.Model):
         ("in_progress", "В работе"),
         ("answered", "Отвечено"),
         ("closed", "Закрыто"),
+        ("archived", "В архиве"),
     ]
 
     user = models.ForeignKey(
@@ -26,7 +28,6 @@ class FeedbackMessage(models.Model):
     )
     name = models.CharField(max_length=255, verbose_name='Имя отправителя')
     email = models.EmailField(verbose_name="Email")
-    phone = models.CharField(max_length=20, blank=True, verbose_name="Телефон")
 
     topic = models.CharField(
         max_length=20,
@@ -37,14 +38,21 @@ class FeedbackMessage(models.Model):
     custom_topic = models.CharField(
         max_length=255,
         blank=True,
+        null=True,
         verbose_name="Тема не из списка"
+    )
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default='new',
+        verbose_name="Статус обращения"
     )
 
     text = models.TextField(verbose_name="Текст обращения")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата обращения')
-    
 
     class Meta:
-        db_table='feedback_messages'
+        db_table = 'feedback_messages'
         verbose_name = "Обращение"
         verbose_name_plural = "Обращения"

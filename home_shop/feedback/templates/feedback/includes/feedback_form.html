@@ -1,24 +1,78 @@
 {% load static %}
 
-<form method="post" action="" class="mt-3">
+<form method="post" action="{% url 'feedback:create_message' %}" class="mt-3">
     {% csrf_token %}
     <div class="row">
-      <div class="col-md-6 mb-3">
-        <label for="id_name" class="form-label">Ваше имя</label>
-        <input type="text" name="name" id="id_name" class="form-control" placeholder="Иван Иванов" required>
-      </div>
-      <div class="col-md-6 mb-3">
-        <label for="id_email" class="form-label">Email</label>
-        <input type="email" name="email" id="id_email" class="form-control" placeholder="example@mail.ru" required>
-      </div>
+        <div class="col-md-6 mb-3">
+            <label for="id_name" class="form-label">Ваше имя</label>
+            <input type="text" name="name" id="id_name" class="form-control"
+               value="{% if form.name.value %}{{ form.name.value }}{% endif %}"
+               placeholder="Иван Иванов" required>
+        </div>
+        {% if form.name.errors %}
+            <div class="d-flex align-items-center border rounded p-2 mb-3" style="border-color: #ccc; background-color: #fafafa;">
+                <span class="me-2 text-warning" style="font-size: 1.2rem;">⚠️</span>
+                <div style="color: #444; font-weight: 500; font-size: 0.95rem; line-height: 1.4;">
+                    {% for error in form.name.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
+        <div class="col-md-6 mb-3">
+            <label for="id_email" class="form-label">Email</label>
+            <input type="email" name="email" id="id_email" class="form-control"
+               value="{% if form.email.value %}{{ form.email.value }}{% endif %}"
+               placeholder="example@mail.ru" required>
+        </div>
+        {% if form.email.errors %}
+            <div class="d-flex align-items-center border rounded p-2 mb-3" style="border-color: #ccc; background-color: #fafafa;">
+                <span class="me-2 text-warning" style="font-size: 1.2rem;">⚠️</span>
+                <div style="color: #444; font-weight: 500; font-size: 0.95rem; line-height: 1.4;">
+                    {% for error in form.email.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            </div>
+        {% endif %}
     </div>
     <div class="mb-3">
-      <label for="id_subject" class="form-label">Тема</label>
-      <input type="text" name="subject" id="id_subject" class="form-control" placeholder="Ваш вопрос" required>
+        <label for="id_topic" class="form-label">Тема сообщения</label>
+        <select name="topic" class="form-select" id="id_topic" required>
+            <option value="" disabled selected>Выберите тему</option>
+            <option value="order">Вопрос по заказу</option>
+            <option value="product">Вопрос по товару</option>
+            <option value="complaint">Жалоба</option>
+            <option value="suggestion">Предложение</option>
+            <option value="other">Другое</option>
+        </select>
+    </div>
+
+    <div class="mb-3" id="custom-topic-container" style="display: none;">
+        <label for="id_custom_topic" class="form-label">Укажите тему</label>
+        <input type="text" name="custom_topic" class="form-control" id="id_custom_topic">
     </div>
     <div class="mb-3">
-      <label for="id_message" class="form-label">Сообщение</label>
-      <textarea name="message" id="id_message" rows="6" class="form-control" placeholder="Опишите ваш запрос" required></textarea>
+      <label for="id_text" class="form-label">Сообщение</label>
+      <textarea name="text" id="id_text" rows="6" class="form-control" placeholder="Опишите ваш запрос" required></textarea>
     </div>
     <button type="submit" class="btn btn-primary">Отправить сообщение</button>
-  </form>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const subjectSelect = document.getElementById("id_topic");
+            const otherSubjectContainer = document.getElementById("custom-topic-container");
+            const otherSubjectInput = document.getElementById("id_custom_topic");
+
+            subjectSelect.addEventListener("change", function() {
+                if (this.value === "other") {
+                    otherSubjectContainer.style.display = "block";
+                    otherSubjectInput.required = true;
+                } else {
+                    otherSubjectContainer.style.display = "none";
+                    otherSubjectInput.required = false;
+                    otherSubjectInput.value = "";
+                }
+            });
+        });
+    </script>
+</form>

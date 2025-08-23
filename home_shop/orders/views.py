@@ -13,6 +13,7 @@ from .forms import OrderCreateForm
 from cart.models import Cart
 from .models import Order, OrderItem
 
+
 class CreateOrderView(LoginRequiredMixin, FormView):
     login_url = reverse_lazy('users:login')
     template_name = 'orders/create_order.html'
@@ -36,10 +37,10 @@ class CreateOrderView(LoginRequiredMixin, FormView):
                 if carts.exists():
                     order = Order.objects.create(
                         user=user,
-                        phone_number = form.cleaned_data['phone_number'],
-                        delivery = form.cleaned_data['delivery'],
-                        delivery_address = form.cleaned_data['delivery_address'],
-                        is_payment_on_get = form.cleaned_data['is_payment_on_get']
+                        phone_number=form.cleaned_data['phone_number'],
+                        delivery=form.cleaned_data['delivery'],
+                        delivery_address=form.cleaned_data['delivery_address'],
+                        is_payment_on_get=form.cleaned_data['is_payment_on_get']
                     )
                     for cart in carts:
                         product = cart.product
@@ -48,8 +49,7 @@ class CreateOrderView(LoginRequiredMixin, FormView):
                         name = cart.product.name
                         price = cart.product.get_total_price()
                         quantity = cart.quantity
-                        
-                        
+
                         if product.quantity < quantity:
                             raise ValidationError(f'Недостаточное количество товара {name} на складе.\
                                                     В наличии: {product.quantity}')
@@ -86,7 +86,6 @@ class CreateOrderView(LoginRequiredMixin, FormView):
     # def post(self, req):
     #     form = OrderCreateForm(data=req.POST)
     #     if form.is_valid():
-            
+
     #         return redirect('users:profile')
     #     return render(req, 'orders/create_order.html', context={'form': form})
-

@@ -1,0 +1,54 @@
+{% load static %}
+
+<form method="post" action="{% url 'send_message' %}">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="id_name" class="form-label">Ваше имя</label>
+        <input type="text" name="name" class="form-control" id="id_name" required>
+    </div>
+    <div class="mb-3">
+        <label for="id_email" class="form-label">Ваш email</label>
+        <input type="email" name="email" class="form-control" id="id_email" required>
+    </div>
+    <div class="mb-3">
+        <label for="id_topic" class="form-label">Тема сообщения</label>
+        <select name="topic" class="form-select" id="id_topic" required>
+            <option value="" disabled selected>Выберите тему</option>
+            <option value="order">Вопрос по заказу</option>
+            <option value="product">Вопрос по товару</option>
+            <option value="complaint">Жалоба</option>
+            <option value="suggestion">Предложение</option>
+            <option value="other">Другое</option>
+        </select>
+    </div>
+
+    <div class="mb-3" id="custom-topic-container" style="display: none;">
+        <label for="id_custom_topic" class="form-label">Укажите тему</label>
+        <input type="text" name="custom_topic" class="form-control" id="id_custom_topic">
+    </div>
+
+    <div class="mb-3">
+        <label for="id_message" class="form-label">Сообщение</label>
+        <textarea name="message" class="form-control" id="id_message" rows="4" required></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Отправить</button>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const subjectSelect = document.getElementById("id_topic");
+            const otherSubjectContainer = document.getElementById("custom-topic-container");
+            const otherSubjectInput = document.getElementById("id_custom_topic");
+
+            subjectSelect.addEventListener("change", function() {
+                if (this.value === "other") {
+                    otherSubjectContainer.style.display = "block";
+                    otherSubjectInput.required = true;
+                } else {
+                    otherSubjectContainer.style.display = "none";
+                    otherSubjectInput.required = false;
+                    otherSubjectInput.value = "";
+                }
+            });
+        });
+    </script>
+</form>

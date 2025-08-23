@@ -1,12 +1,14 @@
 from django.contrib import admin
 from .models import Cart
 
+
 class CartTabAdmin(admin.TabularInline):
     model = Cart
     fields = ['product', 'quantity', 'add_at']
     search_fields = ['product', 'add_at']
     readonly_fields = ('add_at',)
     extra = 1
+
 
 @admin.register(Cart)
 class CartAdmin(admin.ModelAdmin):
@@ -18,12 +20,6 @@ class CartAdmin(admin.ModelAdmin):
         if obj.user:
             return str(obj.user.username)
         return 'Аноним'
-    
+
     def display_product(self, obj):
         return str(obj.product.name)
-    
-
-
-
-
-    

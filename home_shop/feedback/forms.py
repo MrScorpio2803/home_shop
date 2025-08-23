@@ -4,16 +4,23 @@ from .models import FeedbackMessage
 
 
 class CreateMessageForm(forms.ModelForm):
-    
+
     class Meta:
         model = FeedbackMessage
-        fields = ('name', 'email', 'phone', 'topic', 'custom_topic', 'text')
+        fields = ('name', 'email', 'topic', 'custom_topic', 'text')
+
+    TOPIC_CHOICES = [
+        ('order', 'Вопрос по заказу'),
+        ('product', 'Вопрос по товару'),
+        ('complaint', 'Жалоба'),
+        ('suggestion', 'Предложение'),
+        ('other', 'Другое'),
+    ]
 
     name = forms.CharField()
     email = forms.EmailField()
-    phone = forms.CharField()
-    topic = forms.ChoiceField()
-    custom_topic = forms.CharField()
+    topic = forms.ChoiceField(choices=TOPIC_CHOICES)
+    custom_topic = forms.CharField(required=False)
     text = forms.Textarea()
 
 

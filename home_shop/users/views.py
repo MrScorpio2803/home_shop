@@ -12,7 +12,6 @@ from django.urls import reverse_lazy
 
 
 class UserLoginView(LoginView):
-
     template_name = 'users/login.html'
     form_class = UserLoginForm
     success_url = reverse_lazy('main:index')
@@ -22,7 +21,7 @@ class UserLoginView(LoginView):
         if page and page != reverse_lazy('users:login'):
             return page
         return reverse_lazy('main:index')
-    
+
     def form_valid(self, form):
         session_key = self.request.session.session_key
         user = form.get_user()
@@ -43,12 +42,11 @@ class UserLoginView(LoginView):
 
 
 class RegisterView(CreateView):
-    
     template_name = 'users/registration.html'
     form_class = UserRegisterForm
-    
+
     def form_valid(self, form: BaseModelForm) -> HttpResponse:
-        
+
         session_key = self.request.session.session_key
         user = form.instance
 
@@ -57,12 +55,11 @@ class RegisterView(CreateView):
             login(self.request, user)
             if session_key:
                 Cart.objects.filter(session_key=session_key).update(user=user)
-        
+
         return super().form_valid(form)
 
     def get_success_url(self) -> str:
         return reverse_lazy('main:index')
-
 
 
 class ProfileView(LoginRequiredMixin, UpdateView):
@@ -71,9 +68,8 @@ class ProfileView(LoginRequiredMixin, UpdateView):
     form_class = UserEditForm
     success_url = reverse_lazy('users:profile')
 
-    def get_object(self, queryset = None) -> Model:
+    def get_object(self, queryset=None) -> Model:
         return self.request.user
-    
 
 
 # class LogoutView(LoginRequiredMixin, LogoutView):
@@ -83,4 +79,3 @@ class ProfileView(LoginRequiredMixin, UpdateView):
 
 class CartView(TemplateView):
     template_name = 'cart/cart.html'
-
