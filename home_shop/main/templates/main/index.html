@@ -94,7 +94,7 @@
       <div class="carousel-item {% if forloop.first %}active{% endif %}">
         <div class="card p-4">
           <p class="mb-2">“{{ review.text }}”</p>
-          <h6 class="text-end">— {{ review.author.first_name }}</h6>
+          <h6 class="text-end">— {{ review.user.first_name }}</h6>
         </div>
       </div>
       {% endfor %}

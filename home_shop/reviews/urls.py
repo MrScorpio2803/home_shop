@@ -5,5 +5,5 @@ from .views import CreateReviewView
 app_name = 'reviews'
 
 urlpatterns = [
-    path('create-review/', CreateReviewView.as_view(), name='create_review'),
+    path('create-review/<int:order_id>', CreateReviewView.as_view(), name='create_order_review'),
 ]

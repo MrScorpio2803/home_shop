@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Отзыв на заказ #{{ order.id }}{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="card-title mb-0">
+                        <i class="bi bi-chat-heart"></i>
+                        Отзыв на заказ #{{ order.id }}
+                    </h4>
+                </div>
+                <div class="card-body">
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <div class="alert alert-info">
+                        <strong>Заказ #{{ order.id }}</strong>
+                        <p class="mb-0">Поделитесь вашим мнением о качестве обслуживания и товаре.</p>
+                    </div>
+
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+
+                        <!-- Поле оценки -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold">Оценка</label>
+                            <div class="d-flex justify-content-center gap-3 mb-2">
+                                {% for i in "12345" %}
+                                    <input type="radio"
+                                           name="rating"
+                                           value="{{ i }}"
+                                           id="rating_{{ i }}"
+                                           class="btn-check"
+                                           {% if rating_value == i %}checked{% endif %}
+                                           required>
+                                    <label for="rating_{{ i }}" class="btn btn-outline-primary">
+                                        {{ i }} <i class="bi bi-star-fill"></i>
+                                    </label>
+                                {% endfor %}
+                            </div>
+                            {% if form_errors and form_errors.rating %}
+                                <div class="text-danger small mt-2">
+                                    {{ form_errors.rating.0 }}
+                                </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Поле текста -->
+                        <div class="mb-4">
+                            <label for="text" class="form-label fw-bold">Текст отзыва</label>
+                            <textarea class="form-control"
+                                      id="text"
+                                      name="text"
+                                      rows="5"
+                                      maxlength="1000"
+                                      placeholder="Расскажите о вашем опыте...">{{ text_value }}</textarea>
+                            {% if form_errors and form_errors.text %}
+                                <div class="text-danger small mt-2">
+                                    {{ form_errors.text.0 }}
+                                </div>
+                            {% endif %}
+                            <div class="form-text">Необязательное поле. Максимум 1000 символов.</div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="bi bi-send"></i> Отправить отзыв
+                            </button>
+                            <a href="{% url 'users:profile' %}" class="btn btn-outline-secondary">
+                                ← Вернуться к заказу
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Динамическое изменение стиля выбранной кнопки рейтинга
+    document.querySelectorAll('.btn-check').forEach(radio => {
+        radio.addEventListener('change', function() {
+            // Сбрасываем все кнопки к исходному состоянию
+            document.querySelectorAll('[for^="rating_"]').forEach(label => {
+                label.classList.remove('btn-primary');
+                label.classList.add('btn-outline-primary');
+            });
+
+            // Делаем активную кнопку заполненной
+            if (this.checked) {
+                const label = document.querySelector(`[for="${this.id}"]`);
+                label.classList.remove('btn-outline-primary');
+                label.classList.add('btn-primary');
+            }
+        });
+
+        // Инициализация состояния при загрузке страницы
+        if (radio.checked) {
+            const label = document.querySelector(`[for="${radio.id}"]`);
+            label.classList.remove('btn-outline-primary');
+            label.classList.add('btn-primary');
+        }
+    });
+</script>
+{% endblock %}
