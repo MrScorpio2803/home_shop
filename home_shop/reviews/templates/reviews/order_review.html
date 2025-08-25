@@ -1,9 +1,12 @@
 {% extends 'base.html' %}
+
 {% load static %}
+{% load cart_tags %}
 
 {% block title %}Отзыв на заказ #{{ order.id }}{% endblock %}
 
 {% block body %}
+{% order_items request order.id as items %}
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-8 col-lg-6">
@@ -29,7 +32,23 @@
                         <p class="mb-0">Поделитесь вашим мнением о качестве обслуживания и товаре.</p>
                     </div>
 
-                    <form method="post" novalidate>
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <h6 class="card-subtitle mb-2 text-muted">Информация о заказе:</h6>
+                            <ul class="list-unstyled mb-0">
+                                <li><strong>Товары в заказе:</strong>
+                                    <ol>
+                                        {% for item in items %}
+                                            <li>{{ item.name }}</li>
+                                        {% endfor %}
+                                    </ol>
+                                </li>
+                                <li><strong>Дата заказа:</strong> {{ order.created_at|date:"d.m.Y" }}</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <form method="post">
                         {% csrf_token %}
 
                         <!-- Поле оценки -->
@@ -42,7 +61,7 @@
                                            value="{{ i }}"
                                            id="rating_{{ i }}"
                                            class="btn-check"
-                                           {% if rating_value == i %}checked{% endif %}
+                                           {% if form.rating.value|stringformat:"s" == i %}checked{% endif %}
                                            required>
                                     <label for="rating_{{ i }}" class="btn btn-outline-primary">
                                         {{ i }} <i class="bi bi-star-fill"></i>
@@ -64,7 +83,7 @@
                                       name="text"
                                       rows="5"
                                       maxlength="1000"
-                                      placeholder="Расскажите о вашем опыте...">{{ text_value }}</textarea>
+                                      placeholder="Расскажите о вашем опыте...">{% if form.text and form.text.value %} {{ form.text.value }} {% endif %}</textarea>
                             {% if form_errors and form_errors.text %}
                                 <div class="text-danger small mt-2">
                                     {{ form_errors.text.0 }}

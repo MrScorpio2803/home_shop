@@ -33,29 +33,64 @@
                             {% endfor %}
                         </tbody>
                     </table>
-                    <div class="d-flex justify-content-between align-items-center mt-4 p-3 bg-light rounded-3">
-                        <div class="d-flex align-items-center">
-                            <span class="fs-5 fw-bold me-2">Итого:</span>
-                            <span class="fs-5 text-primary">{{ order.items.get_total_price }} ₽</span>
-                        </div>
-
-                        <div>
-                            {% if order.review %}
-                            <div class="btn-group" role="group">
-                                <a href="#" class="btn btn-info btn-sm text-white">
-                                    <i class="bi bi-eye me-1"></i>Просмотреть отзыв
-                                </a>
-                                <a href="#" class="btn btn-warning btn-sm text-white">
-                                    <i class="bi bi-pencil me-1"></i>Редактировать
-                                </a>
+                    <div class="d-flex justify-content-between align-items-center mt-4 p-3 bg-light rounded-3 shadow-sm">
+                        <div class="border-top pt-3">
+                            <!-- Блок с итого -->
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <span class="fs-5 fw-bold text-dark">Итого:&nbsp;</span>
+                                <span class="fs-4 text-primary fw-bold">{{ order.items.get_total_price }} ₽</span>
                             </div>
-                            {% else %}
-                                {% if order.status == 'completed' %}
-                                <a href="{% url 'reviews:create_order_review' order.pk %}" class="btn btn-success btn-sm">
-                                    <i class="bi bi-star-fill me-1"></i>Оставить отзыв
-                                </a>
-                                {% endif %}
+                        
+                            <!-- Блок с отзывом (если есть) -->
+                            {% if order.review %}
+                            <div class="card border-0 bg-light mb-3">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h6 class="text-primary mb-0">
+                                            <i class="bi bi-chat-heart"></i> Ваш отзыв
+                                        </h6>
+                                        <span class="badge bg-{% if order.review.is_published %}success{% else %}warning{% endif %}">
+                                            {{ order.review.rating }}/5
+                                        </span>
+                                    </div>
+                                    
+                                    {% if order.review.text %}
+                                    <p class="mb-2">{{ order.review.text|truncatewords:7 }}</p>
+                                    {% else %}
+                                    <p class="mb-2">Отзыв без текста</p>
+                                    {% endif %}
+                                    
+                                    <div class="d-flex flex-column">
+                                        <p class="mb-1">
+                                            <small class="text-muted">
+                                                <i class="bi bi-{% if order.review.is_published %}check-circle{% else %}hourglass-split{% endif %}"></i>
+                                                {% if order.review.is_published %}Опубликован{% else %}На проверке{% endif %}
+                                            </small>
+                                        </p>
+                                        <p class="mb-0">
+                                            <small class="text-muted">
+                                                Дата последнего обновления: {{ order.review.updated_at|date:"d.m.Y H:i" }}
+                                            </small>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
                             {% endif %}
+                        
+                            <!-- Блок с кнопками -->
+                            <div class="d-flex gap-2">
+                                {% if order.review %}
+                                    <a href="{% url 'reviews:edit_order_review' order.pk %}" class="btn btn-warning btn-sm text-white flex-grow-1">
+                                        <i class="bi bi-pencil-fill me-1"></i>Редактировать отзыв
+                                    </a>
+                                {% else %}
+                                    {% if order.status == 'completed' %}
+                                    <a href="{% url 'reviews:create_order_review' order.pk %}" class="btn btn-success btn-sm flex-grow-1">
+                                        <i class="bi bi-star-fill me-1"></i>Оставить отзыв
+                                    </a>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -44,7 +44,7 @@ class Category(models.Model):
     key = models.CharField(max_length=100, verbose_name='key')
     name = models.CharField(max_length=100, verbose_name='Название')
     slug = models.SlugField()
-    icon = models.CharField(blank=True, null=True, verbose_name='Иконка для категории', default='bi-box')
+    icon = models.CharField(max_length=100, blank=True, null=True, verbose_name='Иконка для категории', default='bi-box')
 
     def __str__(self):
         return f'{self.name}'

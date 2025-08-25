@@ -21,6 +21,9 @@ class ProductReview(models.Model):
         db_table = 'product_reviews'
         ordering = ['-created_at']
         unique_together = ('product', 'user')
+        verbose_name = 'Отзывы о товарах'
+        verbose_name_plural = 'Отзывы о товарах'
+
 
     @property
     def days_since_created(self):
@@ -36,13 +39,15 @@ class OrderReview(models.Model):
                              related_name="order_reviews")  # дублируем для удобства
     rating = models.PositiveSmallIntegerField(default=5, verbose_name='Оценка')
     text = models.TextField(verbose_name='Текст отзыва')
-    is_published = models.BooleanField(default=True, verbose_name='Опубликован')
+    is_published = models.BooleanField(default=False, verbose_name='Опубликован')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата добавления')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='Дата последнего обновления')
 
     class Meta:
         ordering = ['-created_at']
         db_table = 'order_reviews'
+        verbose_name = 'Отзывы о заказах'
+        verbose_name_plural = 'Отзывы о заказах'
 
     def __str__(self):
         return f"Отзыв на заказ #{self.order.id} от {self.user}"
