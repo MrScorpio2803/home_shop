@@ -1,6 +1,9 @@
 from .models import Cart
 from orders.models import Order, OrderItem
 
+from reviews.models import OrderReview
+
+
 def get_user_carts(req):
     if req.user.is_authenticated:
         return Cart.objects.filter(user=req.user)
