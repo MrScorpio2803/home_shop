@@ -18,13 +18,10 @@ class IndexView(ListView):
     context_object_name = 'cards'
     paginate_by = 3
 
-    
-
     def get_queryset(self) -> QuerySet[Any]:
         cat_name = self.kwargs.get('cat_name')
         on_sale = self.request.GET.get('on_sale', '')
         news = self.request.GET.get('new', '')
-        print(news)
         order_by = self.request.GET.get('order_by', 'default')
         best_sellers = self.request.GET.get('bestsellers')
         q = self.request.GET.get('q')
@@ -69,12 +66,10 @@ class IndexView(ListView):
             '-alphabet': '-name',
         }
         final_ordering = [orders[order_by]]
-        print(final_ordering)
         if news == 'on':
             if 'pk' in final_ordering:
                 del final_ordering[0]
             final_ordering.append('-created_at')
-            print(final_ordering)
             products = products.order_by(*final_ordering)[:12]
         else:
             products = products.order_by(*final_ordering)
