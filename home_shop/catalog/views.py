@@ -12,8 +12,8 @@ from .utils import q_search
 
 from reviews.models import ProductReview
 
-class IndexView(ListView):
 
+class IndexView(ListView):
     template_name = 'catalog/catalog.html'
     model = Product
     context_object_name = 'cards'
@@ -34,8 +34,8 @@ class IndexView(ListView):
         if best_sellers:
             ids = []
             popular_products = Product.objects.annotate(
-                                total_sold=Coalesce(Sum(F('orderitem__quantity')), Value(0))
-                                ).order_by('-total_sold')[:5]
+                total_sold=Coalesce(Sum(F('orderitem__quantity')), Value(0))
+            ).order_by('-total_sold')[:5]
             for product in popular_products:
                 ids.append(product.pk)
             filters &= Q(id__in=ids)
@@ -74,7 +74,7 @@ class IndexView(ListView):
             products = products.order_by(*final_ordering)[:12]
         else:
             products = products.order_by(*final_ordering)
-        
+
         for product in products:
             product.total_price = int(product.total_price) if int(
                 product.total_price) == product.total_price else round(product.total_price, 2)
@@ -82,10 +82,8 @@ class IndexView(ListView):
                 product.discount, 2)
         return products
 
-        
-
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
-        
+
         context = super().get_context_data(**kwargs)
         cat_name = self.kwargs.get('cat_name')
         cat = None
@@ -94,7 +92,7 @@ class IndexView(ListView):
         context['cat_name'] = cat_name
         if cat:
             context['cat'] = cat
-            
+
         params = self.request.GET.copy()
         if 'page' in params:
             params.pop('page')
@@ -103,20 +101,21 @@ class IndexView(ListView):
 
 
 class ProductDetailsView(DetailView):
-    
     template_name = 'catalog/product.html'
     slug_url_kwarg = 'slug'
     context_object_name = 'product'
-    def get_object(self, queryset = None) -> Model:
+
+    def get_object(self, queryset=None) -> Model:
         product = Product.objects.get(slug=self.kwargs.get(self.slug_url_kwarg))
         product.total_price = product.price * (1 - product.discount / 100)
-        product.total_price = int(product.total_price) if int(product.total_price) == product.total_price else round(product.total_price, 2)
-        product.discount = int(product.discount) if int(product.discount) == product.discount else round(product.discount, 2)
+        product.total_price = int(product.total_price) if int(product.total_price) == product.total_price else round(
+            product.total_price, 2)
+        product.discount = int(product.discount) if int(product.discount) == product.discount else round(
+            product.discount, 2)
         product.price = int(product.price) if int(product.price) == product.price else round(product.price, 2)
         return product
-    
+
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context['reviews'] = ProductReview.objects.filter(product=self.get_object(), is_published=True)
+        context['reviews'] = ProductReview.objects.filter(product=self.get_object(), status='published')
         return context
-
