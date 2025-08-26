@@ -1,6 +1,3 @@
-import datetime
-from decimal import Decimal
-
 from django.db import models
 from django.urls import reverse
 
@@ -27,7 +24,7 @@ class Product(models.Model):
         return self.price
 
     def __str__(self):
-        return f'Товар: {self.name}. Количество: {self.quantity}'
+        return f'Товар: {self.name}. Количество на складе: {self.quantity}'
     
     def get_absolute_url(self):
         return reverse('catalog:product', kwargs={'slug': self.slug})
