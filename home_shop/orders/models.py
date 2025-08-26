@@ -30,10 +30,10 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Время создания')
     phone_number = models.CharField(max_length=20, verbose_name='Номер телефона')
     delivery = models.BooleanField(default=False, verbose_name='Требуется доставка?')
-    delivery_address = models.TextField(null=True, blank=True, verbose_name='Адрес доставки')
+    delivery_address = models.CharField(max_length=500,null=True, blank=True, verbose_name='Адрес доставки')
     is_payment_on_get = models.BooleanField(default=False, verbose_name='Оплата при получении')
     is_paid = models.BooleanField(default=False, verbose_name='Статус оплаты')
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='В обработке',
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='new',
                               verbose_name='Статус заказа')
 
     class Meta:

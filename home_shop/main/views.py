@@ -15,7 +15,7 @@ class IndexView(TemplateView):
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        context['reviews'] = Review.objects.filter(is_published=True)
+        context['reviews'] = Review.objects.filter(status='published')
         context['categories'] = Category.objects.annotate(
             total_sold=Coalesce(Sum(F('products__orderitem__quantity')), Value(0))
         ).order_by('-total_sold')[:3]

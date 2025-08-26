@@ -2,6 +2,12 @@ from django.contrib import admin
 
 from .models import FeedbackMessage
 
+class FeedbackMesTabAdmin(admin.TabularInline):
+    model = FeedbackMessage
+    fields = ['text', 'topic', 'custom_topic']
+    search_fields = ['text', 'custom_topic']
+    readonly_fields = ('created_at',)
+    extra = 1
 
 @admin.register(FeedbackMessage)
 class FeedbackMessageAdmin(admin.ModelAdmin):

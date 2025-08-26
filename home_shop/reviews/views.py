@@ -1,18 +1,21 @@
 from typing import Any
 from django.db.models.base import Model as Model
-from django.db.models.query import QuerySet
 from django.shortcuts import get_object_or_404, redirect
 from django.views.generic import CreateView, UpdateView
+from django.views import View
 from django.forms import BaseModelForm
 from django.http import HttpRequest, HttpResponse
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.contrib import messages
 
 from .models import OrderReview
 
-from .forms import OrderReviewDetailForm
 
-from orders.models import Order
+from .forms import OrderReviewDetailForm, ProductReviewDetailForm
+
+from .models import ProductReview
+from orders.models import Order, OrderItem
+from catalog.models import Product
 
 
 class CreateOrderReviewView(CreateView):
@@ -63,3 +66,22 @@ class EditOrderReviewView(UpdateView):
         context['order'] = Order.objects.get(pk=self.kwargs['order_id'])
 
         return context
+    
+
+class CreateProductReviewView(View):
+    def post(self, req, product_slug):
+        form = ProductReviewDetailForm(data=req.POST)
+        product = get_object_or_404(Product, slug=product_slug)
+        if form.is_valid():
+            if ProductReview.objects.filter(
+            product=product, 
+            user=self.request.user
+        ).exists():
+                messages.warning(req, 'Вы уже оставляли отзыв на этот товар!')
+                return redirect(reverse('catalog:product', kwargs={'slug': product_slug}))
+            
+            form.instance.product = product
+            form.instance.user = self.request.user
+        else:
+            print(form.errors)
+        return redirect(reverse('catalog:product', kwargs={'slug': product_slug}))

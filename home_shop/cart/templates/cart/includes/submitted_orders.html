@@ -63,8 +63,11 @@
                                     <div class="d-flex flex-column">
                                         <p class="mb-1">
                                             <small class="text-muted">
-                                                <i class="bi bi-{% if order.review.is_published %}check-circle{% else %}hourglass-split{% endif %}"></i>
-                                                {% if order.review.is_published %}Опубликован{% else %}На проверке{% endif %}
+                                                <i class="bi bi-{% if order.review.status == 'published'%}check-circle{% elif order.review.status == 'cancelled'%}x-circle{% else %}hourglass-split{% endif %}"></i>
+                                                {{ order.review.get_status_display }}
+                                                {% if order.review.status == 'cancelled' %}
+                                                <p>Причина отклонения отзыва: {{ order.review.get_reason_for_cancel_display }}</p>
+                                                {% endif %}
                                             </small>
                                         </p>
                                         <p class="mb-0">
