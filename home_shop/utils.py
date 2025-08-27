@@ -84,3 +84,4 @@ def add_to_model():
         card = Product(name=name, description=description, image=image, price=price, slug=slug, category=category)
         card.save()
 
+

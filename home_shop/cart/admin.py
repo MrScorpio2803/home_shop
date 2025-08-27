@@ -1,4 +1,7 @@
 from django.contrib import admin
+from django.urls import reverse
+from django.utils.html import format_html
+
 from .models import Cart
 
 
@@ -24,4 +27,6 @@ class CartAdmin(admin.ModelAdmin):
 
     @admin.display(description='Товар')
     def display_product(self, obj):
-        return str(obj.product.name)
+        url = reverse('admin:catalog_product_change', args=[obj.product.id])
+        return format_html('<a href="{}">{}</a>', url, obj.product.name)
+        

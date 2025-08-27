@@ -82,6 +82,16 @@ class CreateProductReviewView(View):
             
             form.instance.product = product
             form.instance.user = self.request.user
+            form.save()
+        else:
+            print(form.errors)
+        return redirect(reverse('catalog:product', kwargs={'slug': product_slug}))
+
+class EditProductReviewView(View):
+    def post(self, req, product_slug):
+        form = ProductReviewDetailForm(data=req.POST)
+        if form.is_valid():
+            form.save()
         else:
             print(form.errors)
         return redirect(reverse('catalog:product', kwargs={'slug': product_slug}))
