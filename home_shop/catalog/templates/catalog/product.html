@@ -85,8 +85,8 @@
             <!-- Форма добавления отзыва -->
             {% if user.is_authenticated %}
             <div class="mb-4">
-                <h5>Оставить отзыв</h5>
-                <form method="post" action="{% url 'reviews:create_product_review' product.slug %}">
+                <h5>{% if user_review %} Ваш отзыв {% else %}Оставить отзыв {% endif %}</h5>
+                <form method="post" action="{% if user_review %}{% url 'reviews:edit_product_review' product.slug %}{% else %}{% url 'reviews:create_product_review' product.slug %}{% endif %}">
                     {% csrf_token %}
                     <div class="mb-4">
                         <label class="form-label">Оценка</label>
@@ -112,7 +112,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="text" class="form-label">Комментарий</label>
-                        <textarea class="form-control" id="text" name="text" rows="3" required></textarea>
+                        <textarea class="form-control" id="text" name="text" rows="3" required>{% if form.text.value %}{{ form.text.value }}{% endif %}</textarea>
                     </div>
                     <button type="submit" class="btn btn-primary">Отправить отзыв</button>
                 </form>

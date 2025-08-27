@@ -7,6 +7,8 @@ from django.views.generic import DetailView, ListView
 from django.db.models import F, ExpressionWrapper, FloatField, Sum, Value, Q
 from django.db.models.functions import Coalesce
 
+from reviews.forms import ProductReviewDetailForm
+
 from .models import Category, Product
 from .utils import q_search
 
@@ -117,5 +119,16 @@ class ProductDetailsView(DetailView):
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
+        if self.request.user.is_authenticated:
+            review = ProductReview.objects.filter(product=self.get_object(), user=self.request.user)
+        else:
+            review = None
         context['reviews'] = ProductReview.objects.filter(product=self.get_object(), status='published')
+        context['user_review'] = review if review else None
+        if review:
+            search_review = review.first()
+            form = ProductReviewDetailForm(initial={'text': search_review.text, 'rating': search_review.rating})
+        else:
+            form = ProductReviewDetailForm()
+        context['form'] = form
         return context

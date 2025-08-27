@@ -3,8 +3,6 @@ from django.conf import settings
 from django.utils import timezone
 from django.db.models import Min
 
-
-
 from catalog.models import Product
 from orders.models import Order, OrderItem
 
@@ -15,7 +13,7 @@ class ProductReview(models.Model):
         ('published', 'Опубликован'),
         ('cancelled', 'Отклонен'),
     ]
-    
+
     REJECTION_REASONS = [
         ('-', '-'),
         ('spam', 'Спам или реклама'),
@@ -41,7 +39,8 @@ class ProductReview(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='moderating',
                               verbose_name='Статус проверки')
     reason_for_cancel = models.CharField(max_length=50, choices=REJECTION_REASONS, default='-',
-                              verbose_name='Причина отказа')
+                                         verbose_name='Причина отказа')
+
     class Meta:
         db_table = 'product_reviews'
         ordering = ['-created_at']
@@ -49,10 +48,8 @@ class ProductReview(models.Model):
         verbose_name = 'Отзыв о товаре'
         verbose_name_plural = 'Отзывы о товарах'
 
-
     @property
     def days_since_created(self):
-
         first_order_date = OrderItem.objects.filter(
             product=self.product,
             order__user=self.user
@@ -93,7 +90,8 @@ class OrderReview(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='На модерации',
                               verbose_name='Статус проверки')
     reason_for_cancel = models.CharField(max_length=50, choices=REJECTION_REASONS, default='-',
-                              verbose_name='Причина отказа')
+                                         verbose_name='Причина отказа')
+
     class Meta:
         ordering = ['-created_at']
         db_table = 'order_reviews'

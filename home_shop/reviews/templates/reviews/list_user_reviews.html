@@ -1,0 +1,248 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <h1 class="mb-4">Мои отзывы</h1>
+
+    <!-- Статистика -->
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card bg-light">
+                <div class="card-body text-center">
+                    <h3>{{ total_count }}</h3>
+                    <p class="text-muted">Всего отзывов</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-light">
+                <div class="card-body text-center">
+                    <h3>{{ product_count }}</h3>
+                    <p class="text-muted">На товары</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card bg-light">
+                <div class="card-body text-center">
+                    <h3>{{ order_count }}</h3>
+                    <p class="text-muted">На заказы</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Вкладки -->
+    <ul class="nav nav-tabs mb-4" id="reviewsTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link {% if active_tab == 'products' %}active{% endif %}"
+                   id="products-tab" data-bs-toggle="tab" data-bs-target="#products"
+                   type="button" role="tab" aria-controls="products" aria-selected="true">
+                Отзывы на товары ({{ product_count }})
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link {% if active_tab == 'orders' %}active{% endif %}"
+                   id="orders-tab" data-bs-toggle="tab" data-bs-target="#orders"
+                   type="button" role="tab" aria-controls="orders" aria-selected="false">
+                Отзывы на заказы ({{ order_count }})
+            </button>
+        </li>
+    </ul>
+
+    <!-- Контент вкладок -->
+    <div class="tab-content" id="reviewsTabContent">
+        <!-- Вкладка товаров -->
+        <div class="tab-pane fade {% if active_tab == 'products' %}show active{% endif %}"
+             id="products" role="tabpanel" aria-labelledby="products-tab">
+
+            {% if product_reviews %}
+            <div class="row">
+                {% for review in product_reviews %}
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 {% if review.is_published %}border-success{% else %}border-warning{% endif %}">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span class="badge bg-primary">Товар</span>
+                            <span class="badge {% if review.is_published %}bg-success{% else %}bg-warning{% endif %}">
+                                {% if review.is_published %}Опубликовано{% else %}На модерации{% endif %}
+                            </span>
+                        </div>
+
+                        <div class="card-body">
+                            <h6 class="card-title">
+                                <a href="{{ review.product.get_absolute_url }}" class="text-decoration-none">
+                                    {{ review.product.name }}
+                                </a>
+                            </h6>
+
+                            <div class="rating mb-2">
+                                {% for i in "12345" %}
+                                    <i class="fas fa-star {% if forloop.counter <= review.rating %}text-warning{% else %}text-secondary{% endif %}"></i>
+                                {% endfor %}
+                            </div>
+
+                            <p class="card-text">{{ review.text|truncatewords:30 }}</p>
+                        </div>
+
+                        <div class="card-footer bg-transparent">
+                            <small class="text-muted">
+                                {{ review.created_at|date:"d.m.Y H:i" }}
+                            </small>
+                            <div class="mt-2">
+                                <a href="{{ review.product.get_absolute_url }}" class="btn btn-sm btn-outline-primary">
+                                    К товару
+                                </a>
+                                {% if not review.is_published %}
+                                <a href="#" class="btn btn-sm btn-outline-warning">
+                                    Редактировать
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Пагинация для товаров -->
+            {% if product_reviews.has_other_pages %}
+            <nav aria-label="Product reviews pagination">
+                <ul class="pagination justify-content-center">
+                    {% if product_reviews.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?tab=products&page={{ product_reviews.previous_page_number }}">Назад</a>
+                    </li>
+                    {% endif %}
+
+                    {% for num in product_reviews.paginator.page_range %}
+                    <li class="page-item {% if product_reviews.number == num %}active{% endif %}">
+                        <a class="page-link" href="?tab=products&page={{ num }}">{{ num }}</a>
+                    </li>
+                    {% endfor %}
+
+                    {% if product_reviews.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?tab=products&page={{ product_reviews.next_page_number }}">Вперед</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+
+            {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                <h4>Нет отзывов на товары</h4>
+                <p class="text-muted">Оставьте отзыв на купленный товар!</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Вкладка заказов -->
+        <div class="tab-pane fade {% if active_tab == 'orders' %}show active{% endif %}"
+             id="orders" role="tabpanel" aria-labelledby="orders-tab">
+
+            {% if order_reviews %}
+            <div class="row">
+                {% for review in order_reviews %}
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100 {% if review.status == 'published' %}border-success{% elif review.status == 'moderation' %}border-warning{% else %}border-secondary{% endif %}">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span class="badge bg-info">Заказ</span>
+                            <span class="badge
+                                {% if review.status == 'published' %}bg-success
+                                {% elif review.status == 'moderation' %}bg-warning
+                                {% else %}bg-secondary{% endif %}">
+                                {{ review.get_status_display }}
+                            </span>
+                        </div>
+
+                        <div class="card-body">
+                            <h6 class="card-title">
+                                <a href="{{ review.order.get_absolute_url }}" class="text-decoration-none">
+                                    Заказ #{{ review.order.order_number }}
+                                </a>
+                            </h6>
+
+                            <div class="rating mb-2">
+                                {% for i in "12345" %}
+                                    <i class="fas fa-star {% if forloop.counter <= review.rating %}text-warning{% else %}text-secondary{% endif %}"></i>
+                                {% endfor %}
+                            </div>
+
+                            <p class="card-text">{{ review.text|truncatewords:30 }}</p>
+
+                            <p class="text-muted small">
+                                Сумма заказа: {{ review.order.total_price }} ₽
+                            </p>
+                        </div>
+
+                        <div class="card-footer bg-transparent">
+                            <small class="text-muted">
+                                {{ review.created_at|date:"d.m.Y H:i" }}
+                            </small>
+                            <div class="mt-2">
+                                <a href="{{ review.order.get_absolute_url }}" class="btn btn-sm btn-outline-primary">
+                                    К заказу
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Пагинация для заказов -->
+            {% if order_reviews.has_other_pages %}
+            <nav aria-label="Order reviews pagination">
+                <ul class="pagination justify-content-center">
+                    {% if order_reviews.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?tab=orders&page={{ order_reviews.previous_page_number }}">Назад</a>
+                    </li>
+                    {% endif %}
+
+                    {% for num in order_reviews.paginator.page_range %}
+                    <li class="page-item {% if order_reviews.number == num %}active{% endif %}">
+                        <a class="page-link" href="?tab=orders&page={{ num }}">{{ num }}</a>
+                    </li>
+                    {% endfor %}
+
+                    {% if order_reviews.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?tab=orders&page={{ order_reviews.next_page_number }}">Вперед</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+
+            {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
+                <h4>Нет отзывов на заказы</h4>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Сохранение активной вкладки при пагинации
+document.addEventListener('DOMContentLoaded', function() {
+    const tabs = document.querySelectorAll('[data-bs-toggle="tab"]');
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            const tabName = this.getAttribute('data-bs-target').substring(1);
+            const url = new URL(window.location);
+            url.searchParams.set('tab', tabName);
+            url.searchParams.set('page', '1');
+            window.history.replaceState({}, '', url);
+        });
+    });
+});
+</script>
+{% endblock %}
