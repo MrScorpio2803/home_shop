@@ -14,7 +14,8 @@ class Product(models.Model):
     price = models.FloatField(verbose_name='Начальная цена')
     quantity = models.IntegerField(default=1, verbose_name='Количество')
     discount = models.FloatField(default=0, verbose_name='Скидка в %')
-    category = models.ForeignKey('Category', on_delete=models.CASCADE, related_name='products', null=True, blank=True, verbose_name='Категория товара')
+    category = models.ForeignKey('Category', on_delete=models.CASCADE, related_name='products', null=True, blank=True,
+                                 verbose_name='Категория товара')
     slug = models.SlugField()
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='Дата добавления')
 
@@ -25,11 +26,9 @@ class Product(models.Model):
 
     def __str__(self):
         return f'Товар: {self.name}. Количество на складе: {self.quantity}'
-    
+
     def get_absolute_url(self):
         return reverse('catalog:product', kwargs={'slug': self.slug})
-
-
 
 
 class Category(models.Model):
@@ -41,7 +40,8 @@ class Category(models.Model):
     key = models.CharField(max_length=100, verbose_name='key')
     name = models.CharField(max_length=100, verbose_name='Название')
     slug = models.SlugField()
-    icon = models.CharField(max_length=100, blank=True, null=True, verbose_name='Иконка для категории', default='bi-box')
+    icon = models.CharField(max_length=100, blank=True, null=True, verbose_name='Иконка для категории',
+                            default='bi-box')
 
     def __str__(self):
         return f'{self.name}'

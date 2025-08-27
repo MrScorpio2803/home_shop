@@ -19,6 +19,25 @@
     {% block extra_css %}
     {% endblock %}
     <title>{% block title %}{% endblock %}</title>
+    <style>
+        .stars {
+            color: #ffc107; /* жёлтые звёзды */
+            font-size: 1.1rem;
+        }
+        .review-card {
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: 1px solid #f0f0f0;
+        }
+        .review-card .card-title {
+            color: #0d6efd; /* акцентный синий */
+            font-weight: 600;
+        }
+        .empty-card {
+            background-color: #f8f9fa;
+            border: 1px dashed #d0d0d0;
+        }
+    </style>
+
 </head>
 
 
@@ -63,6 +82,7 @@
                                 </a>
                                 <ul class="dropdown-menu">
                                     <li><a class="dropdown-item text-white" role="button" href="{% url 'users:profile' %}">Личный кабинет</a></li>
+                                    <li><a class="dropdown-item text-white" role="button" href="{% url 'reviews:list_reviews' %}">Мои отзывы</a></li>
                                     {% if user.is_staff or user.is_admin %}
                                         <li><a class="dropdown-item  text-white" href="{% url 'admin:index' %}">Админ панель</a></li>
                                     {% endif %}

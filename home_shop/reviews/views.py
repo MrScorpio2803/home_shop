@@ -7,15 +7,16 @@ from django.forms import BaseModelForm
 from django.http import HttpRequest, HttpResponse
 from django.urls import reverse, reverse_lazy
 from django.contrib import messages
+from django.core.paginator import Paginator
 
 from .models import OrderReview
 
 from .forms import OrderReviewDetailForm, ProductReviewDetailForm
 
 from .models import ProductReview
-from orders.models import Order, OrderItem
+from orders.models import Order
 from catalog.models import Product
-
+from feedback.models import FeedbackMessage
 
 class CreateOrderReviewView(CreateView):
     template_name = 'reviews/order_review.html'
@@ -107,8 +108,30 @@ class ListReviewsView(TemplateView):
     template_name = 'reviews/list_user_reviews.html'
 
     def get_context_data(self, **kwargs):
+
+        page = self.request.GET.get('page', 1)
+        tab = self.request.GET.get('tab', 'products')
+
         context = super().get_context_data(**kwargs)
+
         orders = OrderReview.objects.filter(user=self.request.user)
         products = ProductReview.objects.filter(user=self.request.user)
+        contacts = FeedbackMessage.objects.filter(user=self.request.user)
 
-        context['total_count'] = orders.count() + products.count()
+        product_paginator = Paginator(products, 10)
+        product_page = product_paginator.get_page(page)
+
+        # Пагинация для заказов
+        order_paginator = Paginator(orders, 10)
+        order_page = order_paginator.get_page(page)
+        context.update({
+            'product_reviews': product_page,
+            'order_reviews': order_page,
+            'active_tab': tab,
+            'product_count': products.count(),
+            'order_count': orders.count(),
+            'contacts': contacts,
+            'contacts_count': contacts.count()
+        })
+        return context
+
